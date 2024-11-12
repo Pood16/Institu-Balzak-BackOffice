@@ -1,25 +1,230 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css">
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script> -->
-    <script src="tailwind.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <title>Instutu Balzak</title>
 </head>
-<body>
-    <div class="bg-red-500">
-        lahcen
+
+<body class="bg-gray-100">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-gray-800 text-white transition-all duration-300">
+        <!-- Logo Area -->
+        <div class="flex items-center p-4 border-b border-gray-700">
+            <i class="fas fa-puzzle-piece text-2xl"></i>
+            <span class="ml-2 text-xl font-bold">Quiz Admin</span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="mt-8">
+            <a href="index.html"
+                class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                <i class="fas fa-question-circle w-5"></i>
+                <span class="ml-3">Gestion des Questions</span>
+            </a>
+            <a href="users.html"
+                class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                <i class="fas fa-users w-5"></i>
+                <span class="ml-3">Suivi des utilisateurs</span>
+            </a>
+            <a href="userReport.html"
+                class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                <i class="fas fa-file-alt w-5"></i>
+                <span class="ml-3">Rapports</span>
+            </a>
+            <a href="statistics.html"
+                class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                <i class="fas fa-chart-bar w-5"></i>
+                <span class="ml-3">Statistiques</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div id="mainContent" class="ml-64 transition-all duration-300">
+        <!-- Top Navbar -->
+        <header class="bg-white shadow-sm fixed top-0 right-0 left-64 transition-all duration-300">
+            <div class="flex justify-end items-center h-16 px-4">
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700" id="admin-name">Admin User</span>
+                    <button
+                        class="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        id="logout">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <main class="p-6 mt-16">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <!-- Filter Row -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex space-x-4">
+                        <div>
+                            <label for="category" class="text-gray-700 font-medium">Categorie</label>
+                            <select id="category"
+                                class="bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All</option>
+                                <option value="grammar">Grammaire</option>
+                                <option value="vocabulary">Vocabulaire</option>
+                                <option value="comprehension">Comprehension</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="level" class="text-gray-700 font-medium">Level</label>
+                            <select id="level"
+                                class="bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All</option>
+                                <option value="a1">A1</option>
+                                <option value="a2">A2</option>
+                                <option value="b1">B1</option>
+                                <option value="b2">B2</option>
+                                <option value="c1">C1</option>
+                                <option value="c2">C2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="addQuestionBtn"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-plus mr-2"></i> Ajouter Question
+                    </button>
+                </div>
+
+                <!-- Questions Table -->
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="py-2 px-4 text-left">Question</th>
+                            <th class="py-2 px-4 text-left">Niveau</th>
+                            <th class="py-2 px-4 text-left">Categorie</th>
+                            <th class="py-2 px-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be dynamically generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </div>
 
+    <!-- Add/Edit Question Modal -->
+    <div id="questionModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+                <h2 id="modalTitle" class="text-xl font-bold mb-4">Add Question</h2>
+                <form id="questionForm">
+                    <div class="mb-4">
+                        <label for="question" class="text-gray-700 font-medium">Question</label>
+                        <textarea id="question"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            rows="3"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="answer1" class="text-gray-700 font-medium">Answer 1</label>
+                        <input type="text" id="answer1"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="answer2" class="text-gray-700 font-medium">Answer 2</label>
+                        <input type="text" id="answer2"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="answer3" class="text-gray-700 font-medium">Answer 3</label>
+                        <input type="text" id="answer3"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="answer4" class="text-gray-700 font-medium">Answer 4</label>
+                        <input type="text" id="answer4"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <!-- select correct answer for the question -->
+                    <div class="mb-4">
+                        <label for="correctAnswer" class="text-gray-700 font-medium">Correct Answer</label>
+                        <select id="correctAnswer"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select correct answer</option>
+                            <option value="1">Answer 1</option>
+                            <option value="2">Answer 2</option>
+                            <option value="3">Answer 3</option>
+                            <option value="4">Answer 4</option>
+                        </select>
+                    </div>
+                    <!-- select correct answer for the question -->
 
-    
+                    <!-- select the level for the question -->
+                    <div class="mb-4">
+                        <label for="level" class="text-gray-700 font-medium">Level</label>
+                        <select id="level"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select level</option>
+                            <option value="a1">A1</option>
+                            <option value="a2">A2</option>
+                            <option value="b1">B1</option>
+                            <option value="b2">B2</option>
+                            <option value="c1">C1</option>
+                            <option value="c2">C2</option>
+                        </select>
+                    </div>
+                    <!-- select the level for the question -->
 
+                    <!-- select the category for the question -->
+                    <div class="mb-4">
+                        <label for="category" class="text-gray-700 font-medium">Category</label>
+                        <select id="category"
+                            class="w-full bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select category</option>
+                            <option value="grammar">Grammaire</option>
+                            <option value="vocabulary">Vocabulaire</option>
+                            <option value="comprehension">Comprehension</option>
+                        </select>
+                    </div>
+                    <!-- select the category for the question -->
+                    <div class="flex justify-end">
+                        <button type="button" id="cancelBtn"
+                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2">
+                            Cancel
+                        </button>
+                        <button type="submit" id="saveBtn"
+                            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-
-
-    <script src="js/main.js"></script>
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+                <h2 class="text-xl font-bold mb-4">Delete Question</h2>
+                <p class="text-gray-700 mb-6">Are you sure you want to delete this question?</p>
+                <div class="flex justify-end">
+                    <button type="button" id="cancelDeleteBtn"
+                        class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2">
+                        Cancel
+                    </button>
+                    <button type="button" id="confirmDeleteBtn"
+                        class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/main.js">
+    </script>
 </body>
+
 </html>
