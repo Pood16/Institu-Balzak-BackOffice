@@ -1,4 +1,4 @@
-// Array of questions (10 questions for each category: grammar, vocabulary, comprehension)
+
 let questionns = [
   // Grammar questions
   {
@@ -308,7 +308,7 @@ let questionns = [
 ];
 
 
-// Initialize user progress (retrieved from localStorage or created if not existing)
+// initialise and set progress
 let userProgress = JSON.parse(localStorage.getItem('userProgress')) || {
   currentLevel: 'A1',
   levels: {
@@ -322,8 +322,11 @@ let userProgress = JSON.parse(localStorage.getItem('userProgress')) || {
 };
 localStorage.setItem('userProgress', JSON.stringify(userProgress));
 
-// HTML elements references
+// html elements 
+
+const levelButtonsContainer = document.getElementById('level-container');
 const levelButtons = document.querySelectorAll('.btn');
+const subLevelButtonsContainer = document.getElementById('sub-levels');
 const subLevelButtons = document.querySelectorAll('.sub-btn');
 const questionContainer = document.getElementById('questions-container');
 const questionStructure = document.getElementById('question-structure');
@@ -331,31 +334,32 @@ const timerElement = document.getElementById('timer');
 const scoreElement = document.getElementById('header_score');
 const nextReplayButton = document.getElementById('next-replay');
 
-// Quiz state variables
+// variables
 let score = 0;
 let timer = 10;
 let currentIndex = 0;
 let currentCategory = '';
 let timerId;
 let questions = [];
- // To store questions for the selected category
+ 
 
-// Load sub-levels based on the selected level
+// 
 levelButtons.forEach(button => {
   button.addEventListener('click', (event) => {
     const selectedLevel = event.target.innerText;
     if (selectedLevel === userProgress.currentLevel) {
-      document.getElementById('sub-levels').classList.remove('addRemove');
+      subLevelButtonsContainer.classList.remove('addRemove');
+      // levelButtonsContainer.classList.add('addRemove');
     } else {
       alert('Complete the current level to unlock this one.');
     }
   });
 });
 
-// Handle sub-level selection and start quiz
+// sub-level selection and start quiz
 subLevelButtons.forEach(button => {
   button.addEventListener('click', (event) => {
-    currentCategory = event.target.innerText.toLowerCase();
+    currentCategory = event.target.innerText;
    
     questions = questionns.filter(q => q.category === currentCategory); // Filter questions based on category
     
@@ -363,6 +367,7 @@ subLevelButtons.forEach(button => {
       currentIndex = 0;
       score = 0;
       questionContainer.classList.remove('addRemove');
+      // subLevelButtonsContainer.classList.add('addRemove');
       startQuiz();
     } else {
       alert('No questions available for this category.');
@@ -392,7 +397,8 @@ function showQuestion() {
 
 // Check the user's answer
 function checkAnswer(selectedIndex) {
-  clearInterval(timerId); // Stop the timer
+  
+  // clearInterval(timerId); 
   if (questions[currentIndex].answers[selectedIndex].correct) {
     score++;
     scoreElement.textContent = `Score: ${score} / ${questions.length}`;
@@ -433,7 +439,7 @@ function completeQuiz() {
   if (score === 10) {
     userProgress.levels[userProgress.currentLevel][currentCategory] = true;
 
-    // Check if all categories are complete
+    // categories statu
     const allComplete = Object.values(userProgress.levels[userProgress.currentLevel]).every(status => status);
     if (allComplete) {
       const nextLevel = getNextLevel(userProgress.currentLevel);
