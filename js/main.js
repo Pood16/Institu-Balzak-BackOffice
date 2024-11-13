@@ -120,7 +120,7 @@ let app = [
             document.getElementById("level").addEventListener("change", adminDisplayQuestions);
             document.getElementById("category").addEventListener("change", adminDisplayQuestions);
 
-            // Function to display quesstions
+            // Function to display questions
             function adminDisplayQuestions() {
 
                 tableBody.innerHTML = "";
@@ -181,43 +181,43 @@ let app = [
  * Functions to OPEN Add/Edit/Delete Modals
  *  
  */
-// Get references to modals and buttons
-const addQuestionBtn = document.getElementById("addQuestionBtn"); // add button
-const questionModal = document.getElementById("questionModal"); // add/edit question modal
-const deleteModal = document.getElementById("deleteModal"); // delete confirmation modal
+        // Get references to modals and buttons
+        const addQuestionBtn = document.getElementById("addQuestionBtn"); // add button
+        const questionModal = document.getElementById("questionModal"); // add/edit question modal
+        const deleteModal = document.getElementById("deleteModal"); // delete confirmation modal
 
-// Function to open the Add/Edit modal
-function openQuestionModal(isEdit = false, questionData = null) {
-    // Set modal title based on add or edit
-    document.getElementById("modalTitle").innerText = isEdit ? "Edit Question" : "Add Question";
+        // Function to open the Add/Edit modal
+        function openQuestionModal(isEdit = false, questionData = null) {
+            // Set modal title based on add or edit
+            document.getElementById("modalTitle").innerText = isEdit ? "Edit Question" : "Add Question";
 
-    // Populate fields if editing
-    if (isEdit && questionData) {
-        document.getElementById("question").value = questionData.question;
-        document.getElementById("answer1").value = questionData.answers[0].text;
-        document.getElementById("answer2").value = questionData.answers[1].text;
-        document.getElementById("answer3").value = questionData.answers[2].text;
-        document.getElementById("answer4").value = questionData.answers[3].text;
-        // Set the correct answer, level, and category based on questionData
-    } else {
-        // Clear fields if adding a new question
-        document.getElementById("questionForm").reset();
-    }
+            // Populate fields if editing
+            if (isEdit && questionData) {
+                document.getElementById("question").value = questionData.question;
+                document.getElementById("answer1").value = questionData.answers[0].text;
+                document.getElementById("answer2").value = questionData.answers[1].text;
+                document.getElementById("answer3").value = questionData.answers[2].text;
+                document.getElementById("answer4").value = questionData.answers[3].text;
+                // Set the correct answer, level, and category based on questionData
+            } else {
+                // Clear fields if adding a new question
+                document.getElementById("questionForm").reset();
+            }
 
-    questionModal.classList.remove("hidden"); // Show modal
-}
+            questionModal.classList.remove("hidden"); // Show modal
+        }
 
-// Function to open the Delete modal
-function openDeleteModal(questionId) {
-    deleteModal.classList.remove("hidden"); // Show delete modal
-    document.getElementById("confirmDeleteBtn").onclick = () => deleteQuestion(questionId);
-}
+        // Function to open the Delete modal
+        function openDeleteModal(questionId) {
+            deleteModal.classList.remove("hidden"); // Show delete modal
+            document.getElementById("confirmDeleteBtn").onclick = () => deleteQuestion(questionId);
+        }
 
-// Function to close modals
-function closeModals() {
-    questionModal.classList.add("hidden");
-    deleteModal.classList.add("hidden");
-}
+        // Function to close modals
+        function closeModals() {
+            questionModal.classList.add("hidden");
+            deleteModal.classList.add("hidden");
+        }
 
         //  Edit and Delete Functions for Button Actions
         function editQuestion(id) {
