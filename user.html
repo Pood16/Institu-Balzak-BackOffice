@@ -3,133 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
+    <title>User</title>
     <script src="tailwind.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>User Exams</title>
+    <style>
+        .addRemove{
+            display: none;
+        }
+    </style>
 </head>
-<body>
-
-    <!-- header section -->
-    <section class="bg-gray-300" >
-        <div class="container w-10/12 mx-auto py-3 px-5 flex justify-between bg-gray-300">
-            <p class="user-name">user name</p>
-            <button
-                type="button"
-                class="inline-block rounded bg-neutral-100 px-6 pb-2 pt-2 text-xs font-medium leading-normal text-black shadow-light-3 transition duration-150 ease-in-out hover:bg-neutral-200 hover:shadow-light-2 focus:bg-neutral-200 focus:shadow-light-2 focus:outline-none">
-                deconnexion
-            </button>
+<body class="bg-gray-100 font-sans">
+    <div class="max-w-4xl mx-auto p-6">
+        <!-- Header  -->
+        <div class="flex justify-between items-center bg-white p-4 rounded shadow mb-6">
+            <div>
+                <h1 class="text-2xl font-bold">bonjours, <span id="username">Lahcen</span>!</h1>
+            </div>
+            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Log Out</button>
         </div>
-    </section>
-    <!-- End header section -->
-    <!-- start content section -->
 
-    <section id="level-container" class="border border-black container w-10/12 mt-20 mx-auto p-5">
-        <div class="flex justify-center gap-10 mb-10">
-            <button class="btn relative bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-32 h-32">
-                <span class="text-2xl">A1</span>
-                <i class="fa-solid fa-lock-open absolute top-3 right-3 text-black"></i>
-            </button>
-            <button class="btn relative bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-32 h-32">
-                <span class="text-2xl">A2</span>
-                <i class="fa-solid fa-lock absolute top-3 right-3 text-black"></i>
-            </button>
+        <!-- Level Buttons -->
+        <div id="level-container" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
             
-        </div>
-        <div class="flex justify-center gap-10 mb-10">
-            <button class="btn relative bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-32 h-32">
-                <span class="text-2xl">B1</span>
-                <i class="fa-solid fa-lock absolute top-3 right-3 text-black"></i>
-            </button>
-            <button class="btn relative bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-32 h-32">
-                <span class="text-2xl">B2</span>
-                <i class="fa-solid fa-lock absolute top-3 right-3 text-black"></i>
-            </button>
-        </div>
-        <div class="flex justify-center gap-10 ">
-            <button class="btn relative bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-32 h-32">
-                <span class="text-2xl">C1</span>
-                <i class="fa-solid fa-lock absolute top-3 right-3 text-black"></i>
-            </button>
-            <button class="btn relative bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-32 h-32">
-                <span class="text-2xl">C2</span>
-                <i class="fa-solid fa-lock absolute top-3 right-3 text-black"></i>
-            </button>
-        </div>
-    </section>
-    <!-- End content section -->
-     <div class="my-10"></div>
-    <!-- Start Quiz type section  -->
-    
-    <section id="sub-levels" class="border border-black container w-10/12 mx-auto addRemove p-5">
-        <div class="sub-header lg:container flex justify-between p-4 pl-10 pr-10">
-            <p>Categories de niveau : <span>A1</span></p>
-            <button
-                type="button"
-                class="inline-block rounded bg-neutral-100 px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-black shadow-light-3 transition duration-150 ease-in-out hover:bg-neutral-200 hover:shadow-light-2 focus:bg-neutral-200 focus:shadow-light-2 focus:outline-none">
-                main page 
-           </button>
-        </div>
-        <div class="quiz-categorie container mx-auto mt-10">
-            <button class="sub-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-1/4 inline-block ml-20 relative">
-                <span class="text-2xl">grammar</span>
-                <span id="sub-level-progress" class="absolute top-3.5 right-2 text-black"></span>
-            </button>
-            <button class="sub-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-1/4 inline-block ml-20 mt-10 relative">
-                <span class="text-2xl">vocabulary</span>
-                <span id="sub-level-progress" class="absolute top-3.5 right-2 text-black"></span>
-            </button>
-            <button class="sub-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded w-1/4 inline-block ml-20 mt-10 relative">
-                <span class="text-2xl">comprehension</span>
-                <span id="sub-level-progress" class="absolute top-3.5 right-2 text-black"></span>
-            </button>
-        </div>
-    </section>
-    <!-- End Quiz type Section -->
-
-
-    <!-- Start Quiz Question part -->
-    <div id="questions-container" class="addRemove border border-black container w-10/12 mx-auto p-5 pl-10 pr-10 mb-10 mt-10">
-        <div class=" flex justify-between p-4 pl-10 pr-5 border-b-2">
-            <h2 id="category-type">Grammaire</h2>
-            <span id="timer">
-                <i class="fa-solid fa-stopwatch-20"></i>
-                <span>Time left: 20s</span>
-            </span>
-            <span id="header_score"> score : 0 / 10</span>
-        </div>
-        <div id="question-structure" class="pl-10 pr-10 p-2">
-            <h2 id="question">1.Quel est le temps verbal dans 'Il avait mangé' ?</h2>
-            <div id="answer-buttons"> 
-                <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
-                    <span class="text-2xl">Imparfait</span>
+            <div class="relative">
+                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                    A1
                 </button>
-
-                <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
-                    <span class="text-2xl">Imparfait</span>
+                <div class="absolute top-2.5 right-1">
+                        <i class="fa-solid fa-lock-open"></i>
+                </div>
+            </div>
+            
+            
+            <div class="relative">
+                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                    A2
                 </button>
+                <div class="absolute top-2.5 right-1">
+                    <i class="fa-solid fa-lock text-black"></i>
+                    <i class="fa-solid fa-lock-open addRemove"></i>
+                </div>
+            </div>
 
-                <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
-                    <span class="text-2xl">Imparfait</span>
+            
+            <div class="relative">
+                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                    B1
                 </button>
+                <div class="absolute top-2.5 right-1">
+                    <i class="fa-solid fa-lock text-black"></i>
+                    <i class="fa-solid fa-lock-open addRemove"></i>
+                </div>
+            </div>
 
-                <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
-                    <span class="text-2xl">Imparfait</span>
+            
+            <div class="relative">
+                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                    B2
                 </button>
+                <div class="absolute top-2.5 right-1">
+                    <i class="fa-solid fa-lock text-black"></i>
+                    <i class="fa-solid fa-lock-open addRemove"></i>
+                </div>
+            </div>
+
+            
+            <div class="relative">
+                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                    C1
+                </button>
+                <div class="absolute top-2.5 right-1">
+                    <i class="fa-solid fa-lock text-black"></i>
+                    <i class="fa-solid fa-lock-open addRemove"></i>
+                </div>
+            </div>
+
+            
+            <div class="relative">
+                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                    C2
+                </button>
+                <div class="absolute top-2.5 right-1">
+                    <i class="fa-solid fa-lock text-black"></i>
+                    <i class="fa-solid fa-lock-open addRemove"></i>
+                </div>
             </div>
         </div>
-        <div class="flex justify-center mt-3">
-            <button id="next-replay" type="button" class="addRemove text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-10 py-2 mt-5 mb-2">Next</button>
+
+        <!-- Categories -->
+        <div id="sub-levels" class="bg-white p-4 rounded shadow addRemove">
+            <div class="sub-header flex justify-between items-center bg-white p-4 rounded shadow mb-6">
+                <div>
+                    <h2 id="selected-level" class="text-xl font-bold mb-4">niveau actuelle : </h2>
+                </div>
+                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">main menu</button>
+            </div>
+            <div class="quiz-categorie grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="relative">
+                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">grammar</button>
+                    <div class="absolute top-2.5 right-1">
+                        <span>0/10</span>
+                    </div>
+                </div>
+                <div class="relative">
+                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">vocabulary</button>
+                    <div class="absolute top-2.5 right-1">
+                        <span>0/10</span>
+                    </div>
+                </div>
+                <div class="relative">
+                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">comprehension</button>
+                    <div class="absolute top-2.5 right-1">
+                        <span>0/10</span>
+                    </div>
+                </div>
+                
+            </div>
         </div>
-    </div>
-    <!-- End Quiz Question part -->
+
+        <!-- show quiz  -->
 
 
+        <div id="questions-container" class="bg-white p-4 rounded shadow mt-5 addRemove">
+            <div class=" flex justify-between p-4 pl-10 pr-5 border-b-2">
+                <h2 id="category-type">Grammaire</h2>
+                <span id="timer">
+                    <i class="fa-solid fa-stopwatch-20"></i>
+                    <span>Time left: 20s</span>
+                </span>
+                <span id="header_score"> score : 0 / 10</span>
+            </div>
+            <div id="question-structure" class="pl-10 pr-10 p-2">
+                <h2 id="question">1.Quel est le temps verbal dans 'Il avait mangé' ?</h2>
+                <div id="answer-buttons"> 
+                    <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
+                        <span class="text-2xl">Imparfait</span>
+                    </button>
     
+                    <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
+                        <span class="text-2xl">Imparfait</span>
+                    </button>
+    
+                    <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
+                        <span class="text-2xl">Imparfait</span>
+                    </button>
+    
+                    <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 border border-blue-700 rounded text-left">
+                        <span class="text-2xl">Imparfait</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-center mt-3">
+                <button id="next-replay" type="button" class="addRemove text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-10 py-2 mt-5 mb-2">Next</button>
+            </div>
+        </div>
 
 
-
-
+        
+    </div>
     <script src="js/user.js"></script>
 </body>
 </html>
