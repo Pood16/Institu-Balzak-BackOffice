@@ -648,6 +648,8 @@ const nextReplayButton = document.getElementById('next-replay');
 const subLevelButtonsContainer = document.getElementById('sub-levels');
 let categoryType = document.getElementById('category-type');
 let subTypeCategory = document.getElementById('sub-type-category');
+let updateSelectedLevelInCategories = document.getElementById('selected-level');
+
 
 
 // variables
@@ -658,15 +660,17 @@ let currentCategory;
 let currentLevel;
 let timerId;
 let questions = [];
+let scoreInlocal = [];
 
 // Load sub-levels based on the selected level
 levelButtons.forEach(button => {
   button.addEventListener('click', (event) => {
-    const selectedLevel = event.target.innerText.trim();
+    const selectedLevel = event.target.innerText;
     
-  //   levels
+    //   levels
     if (selectedLevel === userProgress.currentLevel) {
-      currentLevel = selectedLevel;
+        currentLevel = selectedLevel;
+        updateSelectedLevelInCategories.innerText = `niveau actuelle :${currentLevel}.`
       subLevelButtonsContainer.classList.remove('addRemove');
     } else {
       alert('Complete the current level to unlock this one.');
@@ -685,6 +689,7 @@ subLevelButtons.forEach(button => {
     const levelData = questionns.find(q => q.level === currentLevel);
     
 
+    
     if (levelData) {
       questions = levelData.categories[currentCategory];
   
@@ -768,6 +773,9 @@ function startTimer() {
 // Complete the quiz and update progress
 function completeQuiz() {
   alert(`Le test est terminé! votre Score: ${score} / ${questions.length}`);
+  scoreInlocal.push(score);
+  localStorage.setItem("scores", JSON.stringify(scoreInlocal));
+  // currentCategory.parentElement.Children[1].children[0].textContent = ` ${score} / ${questions.length}`;
   if (score === questions.length) {
   
   userProgress.levels[currentLevel][currentCategory] = true;
