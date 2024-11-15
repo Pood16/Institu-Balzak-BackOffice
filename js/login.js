@@ -59,7 +59,7 @@ function createUser(username) {
 document.querySelector('.sign-up button').addEventListener('click', function() {
     let usernameInput = document.querySelector('.sign-up input[placeholder="Username"]');
     let username = usernameInput.value.trim();
-
+    
     if (usernameExists(username)) {
         alert('Username already used');
     } else {
@@ -80,7 +80,7 @@ document.getElementById('sign-in').addEventListener('click', function() {
         // console.log(usernameExists(username));
         let connected = users.find( (user) => user.username == username );
         sessionStorage.setItem("connected",JSON.stringify(connected));
-        // window.location.href = 'user.html';
+        window.location.href = 'user.html';
     } else {
         alert('User not found');
     }

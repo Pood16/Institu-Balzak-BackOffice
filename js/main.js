@@ -107,6 +107,9 @@ let app = [
 ];
 
 
+localStorage.setItem("questions",JSON.stringify(app));
+
+
 app = JSON.parse(localStorage.getItem("questions"));
 
 /**
@@ -166,6 +169,7 @@ app = JSON.parse(localStorage.getItem("questions"));
                     <td class="py-3 px-4 text-left">${category}</td>
                     <td class="py-3 px-4 text-center">
                         <div class="flex justify-center space-x-2">
+
                             ${createActionButton("fas fa-edit", "text-blue-500", "Edit Question", `openEditQuestionModal(${question.id},'${level}','${category}')`)}
                             ${createActionButton("fas fa-trash", "text-red-500", "Delete Question", `openDeleteModal(${question.id})`)}
                         </div>
@@ -223,7 +227,6 @@ app = JSON.parse(localStorage.getItem("questions"));
             const questionData = getQuestionDataById(id); // Retrieve question data based on ID
             openQuestionModal(true, { ...questionData, level, category });
         }
-
         // Function to open the Delete modal
         function openDeleteModal(questionId) {
             deleteModal.classList.remove("hidden"); // Show delete modal
@@ -248,6 +251,7 @@ app = JSON.parse(localStorage.getItem("questions"));
             document.getElementById("questionForm").reset();
             const elements = document.getElementById("questionForm");
             for (const element of elements) {
+
                 if(element.id != "cancelBtn"){
                     element.classList.remove("ring-2","ring-rose-500");
                     element.classList.remove("ring-2","ring-green-500");
@@ -266,6 +270,7 @@ app = JSON.parse(localStorage.getItem("questions"));
  */
 
 /**
+
  * Add/Update Question Validation and CRUD
  * 
  */
@@ -296,6 +301,7 @@ app = JSON.parse(localStorage.getItem("questions"));
         validateField(category, category.value !== "", "Please select a valid category.");
 
         if(isValid){
+
             isEdit? updateQuestion(questionData):createQuestion();
             document.getElementById("questionForm").reset(); // Reset form fields
             closeModals(); // close the modal
@@ -349,6 +355,7 @@ app = JSON.parse(localStorage.getItem("questions"));
 
         // Add the new question to the appropriate level and category
         const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === level.toLowerCase());
+
         if (levelIndex !== -1) { // if the level contains elements
             if (app[levelIndex].categories[category]) { // if there's questions in that category
                 app[levelIndex].categories[category].push(newQuestion);
@@ -364,6 +371,7 @@ app = JSON.parse(localStorage.getItem("questions"));
                 }
             });
         }
+
         // Save the updated app array to local storage
         localStorage.setItem("questions", JSON.stringify(app));
 
