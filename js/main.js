@@ -106,7 +106,6 @@ let app = [
     // Ajouter ici d'autres niveaux (A2, B1, B2, C1, C2) avec des questions de difficulté croissante
 ];
 
-localStorage.setItem("questions",JSON.stringify(app));
 
 app = JSON.parse(localStorage.getItem("questions"));
 
@@ -205,13 +204,18 @@ app = JSON.parse(localStorage.getItem("questions"));
                 document.getElementById("answer2").value = questionData.answers[1].text;
                 document.getElementById("answer3").value = questionData.answers[2].text;
                 document.getElementById("answer4").value = questionData.answers[3].text;
-                // Set the correct answer, level, and category based on questionData
+                document.getElementById("correctAnswer").selectedIndex = questionData.answers.findIndex( (answer) => answer.correct == true );
+
             } else {
                 // Clear fields if adding a new question
                 document.getElementById("questionForm").reset();
             }
-
             questionModal.classList.remove("hidden"); // Show modal
+                // Submit event Listener 
+            document.getElementById("questionForm").addEventListener("submit",(event)=>{
+                event.preventDefault(); // Prevent form submit
+                validateForm(isEdit,questionData);
+            });
         }
 
         //  Edit Function for Button Actions
@@ -223,7 +227,7 @@ app = JSON.parse(localStorage.getItem("questions"));
         // Function to open the Delete modal
         function openDeleteModal(questionId) {
             deleteModal.classList.remove("hidden"); // Show delete modal
-            document.getElementById("confirmDeleteBtn").onclick = () => CRUD_d(questionId);
+            document.getElementById("confirmDeleteBtn").onclick = () => deleteQuestion(questionId);
         }
 
         //  function to get question data by ID
@@ -244,10 +248,12 @@ app = JSON.parse(localStorage.getItem("questions"));
             document.getElementById("questionForm").reset();
             const elements = document.getElementById("questionForm");
             for (const element of elements) {
-                element.classList.remove("ring-2","ring-rose-500");
-                element.$
-                classList.remove("ring-2","ring-green-500");
-                element.parentNode.removeChild(element.parentNode.lastChild);
+                if(element.id != "cancelBtn"){
+                    element.classList.remove("ring-2","ring-rose-500");
+                    element.classList.remove("ring-2","ring-green-500");
+                    if(element.nextElementSibling)
+                    element.parentNode.removeChild(element.nextElementSibling);
+                }
             }
 
             questionModal.classList.add("hidden");
@@ -260,15 +266,13 @@ app = JSON.parse(localStorage.getItem("questions"));
  */
 
 /**
- * Add Question Validation and CRUD
+ * Add/Update Question Validation and CRUD
  * 
  */
 
-        let isValid = true; // Initialize validation flag
-// Submit event Listener 
-    document.getElementById("questionForm").addEventListener("submit",(event)=>{
-        event.preventDefault(); // Prevent form submit
-
+    let isValid = true; // Initialize validation flag
+    // Function to validate ADD/UPDATE Question Form
+    function validateForm(isEdit = false , questionData = null){
         // Get references to all inputs and selects
         const questionForm = document.getElementById("questionForm");
         const questionField = document.getElementById("question");
@@ -291,12 +295,12 @@ app = JSON.parse(localStorage.getItem("questions"));
         validateField(category, category.value !== "", "Please select a valid category.");
 
         if(isValid){
-            createQuestion();
+            isEdit? updateQuestion(questionData):createQuestion();
             document.getElementById("questionForm").reset(); // Reset form fields
             closeModals(); // close the modal
         }
-   
-    });
+    }
+
     // Function to apply valid/invalid styles and messages
     function validateField(field, condition, message) {
         const errorElement = field.nextElementSibling;
@@ -321,18 +325,19 @@ app = JSON.parse(localStorage.getItem("questions"));
     // CRUD CREATE Question
     function createQuestion() {
         // Retrieve values from the form
-        const questionText = document.getElementById("question").value.trim();
+        const questionForm = document.getElementById("questionForm");
+        const questionText = questionForm["question"].value.trim();
         const answers = [
             { text: document.getElementById("answer1").value.trim(), correct: false },
             { text: document.getElementById("answer2").value.trim(), correct: false },
             { text: document.getElementById("answer3").value.trim(), correct: false },
             { text: document.getElementById("answer4").value.trim(), correct: false }
         ];
-        const correctAnswerIndex = parseInt(document.getElementById("correctAnswer").value) - 1;
+        const correctAnswerIndex = parseInt(questionForm["correctAnswer"].value) - 1;
         answers[correctAnswerIndex].correct = true;
 
-        const level = document.getElementById("level").value;
-        const category = document.getElementById("category").value;
+        const level = questionForm["level"].value;
+        const category = questionForm["category"].value;
 
         // Construct the new question object
         const newQuestion = {
@@ -343,8 +348,8 @@ app = JSON.parse(localStorage.getItem("questions"));
 
         // Add the new question to the appropriate level and category
         const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === level.toLowerCase());
-        if (levelIndex !== -1) {
-            if (app[levelIndex].categories[category]) {
+        if (levelIndex !== -1) { // if the level contains elements
+            if (app[levelIndex].categories[category]) { // if there's questions in that category
                 app[levelIndex].categories[category].push(newQuestion);
             } else {
                 app[levelIndex].categories[category] = [newQuestion];
@@ -358,7 +363,6 @@ app = JSON.parse(localStorage.getItem("questions"));
                 }
             });
         }
-
         // Save the updated app array to local storage
         localStorage.setItem("questions", JSON.stringify(app));
 
@@ -369,6 +373,31 @@ app = JSON.parse(localStorage.getItem("questions"));
         adminDisplayQuestions();
     }
 
+    // CRUD update question
+    function updateQuestion(questionData){
+        const questionForm = document.getElementById("questionForm");
+        const answers = [
+            { text: document.getElementById("answer1").value.trim(), correct: false },
+            { text: document.getElementById("answer2").value.trim(), correct: false },
+            { text: document.getElementById("answer3").value.trim(), correct: false },
+            { text: document.getElementById("answer4").value.trim(), correct: false }
+        ];
+
+        const correctAnswerIndex = parseInt(questionForm["correctAnswer"].value) - 1;
+        answers[correctAnswerIndex].correct = true;
+
+        const level = questionForm["level"].value;
+        const category = questionForm["category"].value;
+
+        // Add the new question to the appropriate level and category
+        const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === level.toLowerCase());
+        if(level == questionData.level){
+            if(category)
+                ;
+        } // if level didn't change 
+        getQuestionDataById(questionData.id).question = questionField;
+
+    }
 
 
 /**
