@@ -205,6 +205,8 @@ app = JSON.parse(localStorage.getItem("questions"));
                 document.getElementById("answer2").value = questionData.answers[1].text;
                 document.getElementById("answer3").value = questionData.answers[2].text;
                 document.getElementById("answer4").value = questionData.answers[3].text;
+                document.getElementById("correctAnswer").selectedIndex = questionData.answers.findIndex( (answer) => answer.correct == true );
+                document.getElementById("level").selectedIndex = questionData.answers.findIndex( (answer) => answer.correct == true );
                 // Set the correct answer, level, and category based on questionData
             } else {
                 // Clear fields if adding a new question
@@ -244,10 +246,11 @@ app = JSON.parse(localStorage.getItem("questions"));
             document.getElementById("questionForm").reset();
             const elements = document.getElementById("questionForm");
             for (const element of elements) {
-                element.classList.remove("ring-2","ring-rose-500");
-                element.$
-                classList.remove("ring-2","ring-green-500");
-                element.parentNode.removeChild(element.parentNode.lastChild);
+                if(element.id != "saveBtn"){
+                    element.classList.remove("ring-2","ring-rose-500");
+                    element.classList.remove("ring-2","ring-green-500");
+                    element.parentNode.removeChild(element.parentNode.lastChild);
+                }
             }
 
             questionModal.classList.add("hidden");
@@ -321,18 +324,22 @@ app = JSON.parse(localStorage.getItem("questions"));
     // CRUD CREATE Question
     function createQuestion() {
         // Retrieve values from the form
-        const questionText = document.getElementById("question").value.trim();
+        const questionForm = document.getElementById("questionForm")
+        const questionText = questionForm["question"].value.trim();
         const answers = [
             { text: document.getElementById("answer1").value.trim(), correct: false },
             { text: document.getElementById("answer2").value.trim(), correct: false },
             { text: document.getElementById("answer3").value.trim(), correct: false },
             { text: document.getElementById("answer4").value.trim(), correct: false }
         ];
-        const correctAnswerIndex = parseInt(document.getElementById("correctAnswer").value) - 1;
+        const correctAnswerIndex = parseInt(questionForm["correctAnswer"].value) - 1;
         answers[correctAnswerIndex].correct = true;
 
-        const level = document.getElementById("level").value;
-        const category = document.getElementById("category").value;
+        const level = questionForm["level"].value;
+        const category = questionForm["category"].value;
+
+        console.log(level,category);
+        
 
         // Construct the new question object
         const newQuestion = {
@@ -343,8 +350,8 @@ app = JSON.parse(localStorage.getItem("questions"));
 
         // Add the new question to the appropriate level and category
         const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === level.toLowerCase());
-        if (levelIndex !== -1) {
-            if (app[levelIndex].categories[category]) {
+        if (levelIndex !== -1) { // if the level contains elements
+            if (app[levelIndex].categories[category]) { // if there's questions in that category
                 app[levelIndex].categories[category].push(newQuestion);
             } else {
                 app[levelIndex].categories[category] = [newQuestion];
@@ -358,6 +365,7 @@ app = JSON.parse(localStorage.getItem("questions"));
                 }
             });
         }
+        console.log(app);
 
         // Save the updated app array to local storage
         localStorage.setItem("questions", JSON.stringify(app));
