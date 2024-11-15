@@ -106,6 +106,10 @@ let app = [
     // Ajouter ici d'autres niveaux (A2, B1, B2, C1, C2) avec des questions de difficulté croissante
 ];
 
+localStorage.setItem("questions",JSON.stringify(app));
+
+app = JSON.parse(localStorage.getItem("questions"));
+
 /**
  * Filter Questions Display
  * 
@@ -163,8 +167,8 @@ let app = [
                     <td class="py-3 px-4 text-left">${category}</td>
                     <td class="py-3 px-4 text-center">
                         <div class="flex justify-center space-x-2">
-                            ${createActionButton("fas fa-edit", "text-blue-500", "Edit Question", `editQuestion(${question.id})`)}
-                            ${createActionButton("fas fa-trash", "text-red-500", "Delete Question", `deleteQuestion(${question.id})`)}
+                            ${createActionButton("fas fa-edit", "text-blue-500", "Edit Question", `openEditQuestionModal(${question.id})`)}
+                            ${createActionButton("fas fa-trash", "text-red-500", "Delete Question", `openDeleteModal(${question.id})`)}
                         </div>
                     </td>
                 `;
@@ -186,7 +190,10 @@ let app = [
         const questionModal = document.getElementById("questionModal"); // add/edit question modal
         const deleteModal = document.getElementById("deleteModal"); // delete confirmation modal
 
-        // Function to open the Add/Edit modal
+        // Event listener for Add button
+        addQuestionBtn.addEventListener("click", () => openQuestionModal(false)); 
+
+        // Function to open the Add/Edit modal (default parameters for add)
         function openQuestionModal(isEdit = false, questionData = null) {
             // Set modal title based on add or edit
             document.getElementById("modalTitle").innerText = isEdit ? "Edit Question" : "Add Question";
@@ -207,26 +214,16 @@ let app = [
             questionModal.classList.remove("hidden"); // Show modal
         }
 
-        // Function to open the Delete modal
-        function openDeleteModal(questionId) {
-            deleteModal.classList.remove("hidden"); // Show delete modal
-            document.getElementById("confirmDeleteBtn").onclick = () => deleteQuestion(questionId);
-        }
-
-        // Function to close modals
-        function closeModals() {
-            questionModal.classList.add("hidden");
-            deleteModal.classList.add("hidden");
-        }
-
-        //  Edit and Delete Functions for Button Actions
-        function editQuestion(id) {
+        //  Edit Function for Button Actions
+        function openEditQuestionModal(id) {
             const questionData = getQuestionDataById(id); // Retrieve question data based on ID
             openQuestionModal(true, questionData);
         }
 
-        function deleteQuestion(id) {
-            openDeleteModal(id); // Open the delete modal with the question ID
+        // Function to open the Delete modal
+        function openDeleteModal(questionId) {
+            deleteModal.classList.remove("hidden"); // Show delete modal
+            document.getElementById("confirmDeleteBtn").onclick = () => CRUD_d(questionId);
         }
 
         //  function to get question data by ID
@@ -238,20 +235,152 @@ let app = [
                 )
             )[0];
         }
+        
+        // Add event listeners to cancel buttons(edit/Add + delete) 
+        document.getElementById("cancelBtn").addEventListener("click", closeModals);
+        document.getElementById("cancelDeleteBtn").addEventListener("click", closeModals);
+        // Function to close modals
+        function closeModals() {
+            document.getElementById("questionForm").reset();
+            const elements = document.getElementById("questionForm");
+            for (const element of elements) {
+                element.classList.remove("ring-2","ring-rose-500");
+                element.$
+                classList.remove("ring-2","ring-green-500");
+                element.parentNode.removeChild(element.parentNode.lastChild);
+            }
 
+            questionModal.classList.add("hidden");
+            deleteModal.classList.add("hidden");
+        }
+        
 /**
  * END Functions to OPEN Add/Edit/Delete Modals
  *  
  */
 
+/**
+ * Add Question Validation and CRUD
+ * 
+ */
+
+        let isValid = true; // Initialize validation flag
+// Submit event Listener 
+    document.getElementById("questionForm").addEventListener("submit",(event)=>{
+        event.preventDefault(); // Prevent form submit
+
+        // Get references to all inputs and selects
+        const questionForm = document.getElementById("questionForm");
+        const questionField = document.getElementById("question");
+        const answer1 = document.getElementById("answer1");
+        const answer2 = document.getElementById("answer2");
+        const answer3 = document.getElementById("answer3");
+        const answer4 = document.getElementById("answer4");
+        const correctAnswer = document.getElementById("correctAnswer");
+        const level = questionForm.elements["level"];
+        const category = questionForm.elements["category"];
+
+        // Validate each field
+        validateField(questionField, questionField.value.length > 10, "The question must be longer than 10 characters.");
+        validateField(answer1, answer1.value.trim() !== "", "This field is required, please fill it before submitting.");
+        validateField(answer2, answer2.value.trim() !== "", "This field is required, please fill it before submitting.");
+        validateField(answer3, answer3.value.trim() !== "", "This field is required, please fill it before submitting.");
+        validateField(answer4, answer4.value.trim() !== "", "This field is required, please fill it before submitting.");
+        validateField(correctAnswer, correctAnswer.value !== "", "Please select a valid option.");
+        validateField(level, level.value !== "", "Please select a valid level.");
+        validateField(category, category.value !== "", "Please select a valid category.");
+
+        if(isValid){
+            createQuestion();
+            document.getElementById("questionForm").reset(); // Reset form fields
+            closeModals(); // close the modal
+        }
+   
+    });
+    // Function to apply valid/invalid styles and messages
+    function validateField(field, condition, message) {
+        const errorElement = field.nextElementSibling;
+
+        if (condition) {
+            field.classList.remove("ring-2", "ring-rose-500");
+            field.classList.add("ring-2" ,"ring-green-500");
+            if (errorElement) errorElement.remove(); // Remove existing error message
+        } else {
+            field.classList.remove("ring-2" ,"ring-green-500");
+            field.classList.add("ring-2" ,"ring-rose-500");
+            if (!errorElement) {
+                const errorTag = document.createElement("small");
+                errorTag.className = "text-red-500";
+                errorTag.innerText = message;
+                field.parentNode.appendChild(errorTag);
+            }
+            isValid = false;
+        }
+    }
+
+    // CRUD CREATE Question
+    function createQuestion() {
+        // Retrieve values from the form
+        const questionText = document.getElementById("question").value.trim();
+        const answers = [
+            { text: document.getElementById("answer1").value.trim(), correct: false },
+            { text: document.getElementById("answer2").value.trim(), correct: false },
+            { text: document.getElementById("answer3").value.trim(), correct: false },
+            { text: document.getElementById("answer4").value.trim(), correct: false }
+        ];
+        const correctAnswerIndex = parseInt(document.getElementById("correctAnswer").value) - 1;
+        answers[correctAnswerIndex].correct = true;
+
+        const level = document.getElementById("level").value;
+        const category = document.getElementById("category").value;
+
+        // Construct the new question object
+        const newQuestion = {
+            id: Date.now(), // Use a unique ID based on timestamp
+            question: questionText,
+            answers: answers
+        };
+
+        // Add the new question to the appropriate level and category
+        const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === level.toLowerCase());
+        if (levelIndex !== -1) {
+            if (app[levelIndex].categories[category]) {
+                app[levelIndex].categories[category].push(newQuestion);
+            } else {
+                app[levelIndex].categories[category] = [newQuestion];
+            }
+        } else {
+            // Create a new level if it doesn't exist
+            app.push({
+                level: level.toUpperCase(),
+                categories: {
+                    [category]: [newQuestion]
+                }
+            });
+        }
+
+        // Save the updated app array to local storage
+        localStorage.setItem("questions", JSON.stringify(app));
+
+        // Display success message
+        alert("Question added successfully!");
+
+        // Refresh the question table
+        adminDisplayQuestions();
+    }
 
 
 
-// Event listener for Add button
-addQuestionBtn.addEventListener("click", () => openQuestionModal(false));
-// Add event listeners to cancel buttons
-document.getElementById("cancelBtn").addEventListener("click", closeModals);
-document.getElementById("cancelDeleteBtn").addEventListener("click", closeModals);
+/**
+ *  END Add Question Validation
+ * 
+ */
+
+    
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     //TODO: set sessionStorage in login page (in progress by my collegue)
