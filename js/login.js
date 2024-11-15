@@ -80,7 +80,7 @@ document.getElementById('sign-in').addEventListener('click', function() {
         // console.log(usernameExists(username));
         let connected = users.find( (user) => user.username == username );
         sessionStorage.setItem("connected",JSON.stringify(connected));
-        // window.location.href = 'user.html';
+        window.location.href = 'user.html';
     } else {
         alert('User not found');
     }

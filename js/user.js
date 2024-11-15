@@ -1,3 +1,16 @@
+document.getElementById('logout-button').addEventListener('click', ()=> {
+  
+  sessionStorage.clear();
+  
+  location.reload();
+});
+document.addEventListener("DOMContentLoaded",function(){
+  if(!sessionStorage.getItem("connected")){
+      window.location.href = 'login.html'
+  }
+})
+
+
 let questionns = [
   {
     level: "A1",
