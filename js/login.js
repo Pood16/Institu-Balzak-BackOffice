@@ -1,3 +1,4 @@
+
 let container = document.getElementById('container');
 
 toggle = () => {
@@ -63,5 +64,18 @@ document.querySelector('.sign-up button').addEventListener('click', function() {
         createUser(username);
         alert('User created successfully');
         usernameInput.value = ''; // Clear the input field
+        window.location.href = 'user.html'; // Redirect to user.html
+    }
+});
+
+// Sign In button event listener
+document.querySelector('.sign-in button').addEventListener('click', function() {
+    let usernameInput = document.querySelector('.sign-in input[placeholder="Username"]');
+    let username = usernameInput.value.trim();
+
+    if (usernameExists(username)) {
+        window.location.href = 'user.html'; // Redirect to user.html
+    } else {
+        alert('User not found. Try to sign up.');
     }
 });
