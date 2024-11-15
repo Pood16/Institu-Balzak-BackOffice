@@ -59,10 +59,7 @@ function createUser(username) {
 document.querySelector('.sign-up button').addEventListener('click', function() {
     let usernameInput = document.querySelector('.sign-up input[placeholder="Username"]');
     let username = usernameInput.value.trim();
-    if(usernameInput === "admin"){
-        window.location.href = "index.html";
-    }
-
+    
     if (usernameExists(username)) {
         alert('Username already used');
     } else {
