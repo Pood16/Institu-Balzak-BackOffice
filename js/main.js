@@ -166,7 +166,7 @@ app = JSON.parse(localStorage.getItem("questions"));
                     <td class="py-3 px-4 text-left">${category}</td>
                     <td class="py-3 px-4 text-center">
                         <div class="flex justify-center space-x-2">
-                            ${createActionButton("fas fa-edit", "text-blue-500", "Edit Question", `openEditQuestionModal(${question.id})`)}
+                            ${createActionButton("fas fa-edit", "text-blue-500", "Edit Question", `openEditQuestionModal(${question.id},'${level}','${category}')`)}
                             ${createActionButton("fas fa-trash", "text-red-500", "Delete Question", `openDeleteModal(${question.id})`)}
                         </div>
                     </td>
@@ -219,9 +219,9 @@ app = JSON.parse(localStorage.getItem("questions"));
         }
 
         //  Edit Function for Button Actions
-        function openEditQuestionModal(id) {
+        function openEditQuestionModal(id,level,category) {
             const questionData = getQuestionDataById(id); // Retrieve question data based on ID
-            openQuestionModal(true, questionData);
+            openQuestionModal(true, { ...questionData, level, category });
         }
 
         // Function to open the Delete modal
@@ -240,7 +240,7 @@ app = JSON.parse(localStorage.getItem("questions"));
             )[0];
         }
         
-        // Add event listeners to cancel buttons(edit/Add + delete) 
+        // Add event listeners to cancel modals buttons(edit/Add + delete) 
         document.getElementById("cancelBtn").addEventListener("click", closeModals);
         document.getElementById("cancelDeleteBtn").addEventListener("click", closeModals);
         // Function to close modals
@@ -271,6 +271,7 @@ app = JSON.parse(localStorage.getItem("questions"));
  */
 
     let isValid = true; // Initialize validation flag
+    
     // Function to validate ADD/UPDATE Question Form
     function validateForm(isEdit = false , questionData = null){
         // Get references to all inputs and selects
@@ -374,30 +375,77 @@ app = JSON.parse(localStorage.getItem("questions"));
     }
 
     // CRUD update question
-    function updateQuestion(questionData){
+    function updateQuestion(questionData) {
         const questionForm = document.getElementById("questionForm");
-        const answers = [
+        const updatedQuestionText = questionForm["question"].value.trim();
+        const updatedAnswers = [
             { text: document.getElementById("answer1").value.trim(), correct: false },
             { text: document.getElementById("answer2").value.trim(), correct: false },
             { text: document.getElementById("answer3").value.trim(), correct: false },
             { text: document.getElementById("answer4").value.trim(), correct: false }
         ];
-
-        const correctAnswerIndex = parseInt(questionForm["correctAnswer"].value) - 1;
-        answers[correctAnswerIndex].correct = true;
-
-        const level = questionForm["level"].value;
-        const category = questionForm["category"].value;
-
-        // Add the new question to the appropriate level and category
-        const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === level.toLowerCase());
-        if(level == questionData.level){
-            if(category)
-                ;
-        } // if level didn't change 
-        getQuestionDataById(questionData.id).question = questionField;
-
+    
+        const updatedCorrectAnswerIndex = parseInt(questionForm["correctAnswer"].value) - 1;
+        updatedAnswers[updatedCorrectAnswerIndex].correct = true;
+    
+        const updatedLevel = questionForm["level"].value;
+        const updatedCategory = questionForm["category"].value;
+    
+        // Locate the question in the app array
+        const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === questionData.level.toLowerCase());
+        if (levelIndex !== -1) {
+            const categoryQuestions = app[levelIndex].categories[questionData.category];
+            const questionIndex = categoryQuestions.findIndex(q => q.id === questionData.id);
+    
+            if (questionIndex !== -1) {
+                // Update the question details
+                categoryQuestions[questionIndex].question = updatedQuestionText;
+                categoryQuestions[questionIndex].answers = updatedAnswers;
+    
+                // Handle level/category changes
+                if (updatedLevel.toLowerCase() !== questionData.level.toLowerCase() || 
+                    updatedCategory !== questionData.category) {
+                    // Remove the question from the old category
+                    categoryQuestions.splice(questionIndex, 1);
+    
+                    // Add the question to the new level and category
+                    const newLevelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === updatedLevel.toLowerCase());
+                    if (newLevelIndex !== -1) {
+                        if (!app[newLevelIndex].categories[updatedCategory]) {
+                            app[newLevelIndex].categories[updatedCategory] = [];
+                        }
+                        app[newLevelIndex].categories[updatedCategory].push({
+                            ...categoryQuestions[questionIndex],
+                            level: updatedLevel,
+                            category: updatedCategory
+                        });
+                    } else {
+                        // Create a new level if it doesn't exist
+                        app.push({
+                            level: updatedLevel.toUpperCase(),
+                            categories: {
+                                [updatedCategory]: [{
+                                    id: questionData.id,
+                                    question: updatedQuestionText,
+                                    answers: updatedAnswers
+                                }]
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    
+        // Save the updated app array to local storage
+        localStorage.setItem("questions", JSON.stringify(app));
+    
+        // Display success message
+        alert("Question updated successfully!");
+    
+        // Refresh the question table
+        adminDisplayQuestions();
     }
+    
 
 
 /**
