@@ -21,6 +21,8 @@ toggle = () => {
 	}
 };
 
+let users = JSON.parse(localStorage.getItem('utilisateurs')) || [];
+
 setTimeout(() => {
 	container.classList.add('sign-in');
 }, 200);
@@ -34,7 +36,6 @@ function usernameExists(username) {
 
 // Function to create a new user
 function createUser(username) {
-    let users = JSON.parse(localStorage.getItem('utilisateurs')) || [];
     let newUserId = `TCF${String(users.length + 1).padStart(2, '0')}`;
     let newUser = {
         id: newUserId,
@@ -51,6 +52,7 @@ function createUser(username) {
     };
     users.push(newUser);
     localStorage.setItem('utilisateurs', JSON.stringify(users));
+    return newUser;
 }
 
 // Sign Up button event listener
@@ -61,7 +63,8 @@ document.querySelector('.sign-up button').addEventListener('click', function() {
     if (usernameExists(username)) {
         alert('Username already used');
     } else {
-        createUser(username);
+        const user = createUser(username);
+        sessionStorage.setItem("connected",JSON.stringify(user));
         alert('User created successfully');
         usernameInput.value = ''; // Clear the input field
         window.location.href = 'user.html'; // Redirect to user.html
@@ -69,13 +72,22 @@ document.querySelector('.sign-up button').addEventListener('click', function() {
 });
 
 // Sign In button event listener
-document.querySelector('.sign-in button').addEventListener('click', function() {
-    let usernameInput = document.querySelector('.sign-in input[placeholder="Username"]');
+document.getElementById('sign-in').addEventListener('click', function() {
+    let usernameInput = document.getElementById('username');
     let username = usernameInput.value.trim();
 
     if (usernameExists(username)) {
-        window.location.href = 'user.html'; // Redirect to user.html
+        // console.log(usernameExists(username));
+        let connected = users.find( (user) => user.username == username );
+        sessionStorage.setItem("connected",JSON.stringify(connected));
+        // window.location.href = 'user.html';
     } else {
-        alert('User not found. Try to sign up.');
+        alert('User not found');
     }
 });
+
+document.addEventListener("DOMContentLoaded",function(){
+    if(sessionStorage.getItem("connected")){
+        window.location.href = 'user.html'
+    }
+})
