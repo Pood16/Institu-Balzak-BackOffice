@@ -245,8 +245,7 @@ app = JSON.parse(localStorage.getItem("questions"));
             const elements = document.getElementById("questionForm");
             for (const element of elements) {
                 element.classList.remove("ring-2","ring-rose-500");
-                element.$
-                classList.remove("ring-2","ring-green-500");
+                element.classList.remove("ring-2","ring-green-500");
                 element.parentNode.removeChild(element.parentNode.lastChild);
             }
 

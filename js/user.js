@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded",function(){
   }
 })
 
-
 let questionns = [
   {
     level: "A1",
@@ -635,9 +634,10 @@ let questionns = [
     }
   }
 ];
-
+let utilisateur = JSON.parse(sessionStorage.getItem("connected"));
+document.getElementById("username-bar").innerText = utilisateur.username;
 let userProgress = JSON.parse(localStorage.getItem('userProgress')) || {
-  username: "lahcen",
+  username: utilisateur.username,
   currentLevel: 'A1',
   levels: {
     A1: { 
