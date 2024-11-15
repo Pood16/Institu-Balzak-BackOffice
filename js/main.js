@@ -106,6 +106,10 @@ let app = [
     // Ajouter ici d'autres niveaux (A2, B1, B2, C1, C2) avec des questions de difficulté croissante
 ];
 
+localStorage.setItem("questions",JSON.stringify(app));
+
+app = JSON.parse(localStorage.getItem("questions"));
+
 /**
  * Filter Questions Display
  * 
@@ -256,11 +260,11 @@ let app = [
  */
 
 /**
- * Add Question Validation
+ * Add Question Validation and CRUD
  * 
  */
 
-let isValid = true; // Initialize validation flag
+        let isValid = true; // Initialize validation flag
 // Submit event Listener 
     document.getElementById("questionForm").addEventListener("submit",(event)=>{
         event.preventDefault(); // Prevent form submit
@@ -287,7 +291,7 @@ let isValid = true; // Initialize validation flag
         validateField(category, category.value !== "", "Please select a valid category.");
 
         if(isValid){
-            saveQuestion();
+            createQuestion();
             document.getElementById("questionForm").reset(); // Reset form fields
             closeModals(); // close the modal
         }
@@ -315,11 +319,55 @@ let isValid = true; // Initialize validation flag
     }
 
     // CRUD CREATE Question
-    function saveQuestion() {
-        // Implement save logic for the question (add to array local storage)
-        alert("Question saved successfully!");
-    }
+    function createQuestion() {
+        // Retrieve values from the form
+        const questionText = document.getElementById("question").value.trim();
+        const answers = [
+            { text: document.getElementById("answer1").value.trim(), correct: false },
+            { text: document.getElementById("answer2").value.trim(), correct: false },
+            { text: document.getElementById("answer3").value.trim(), correct: false },
+            { text: document.getElementById("answer4").value.trim(), correct: false }
+        ];
+        const correctAnswerIndex = parseInt(document.getElementById("correctAnswer").value) - 1;
+        answers[correctAnswerIndex].correct = true;
 
+        const level = document.getElementById("level").value;
+        const category = document.getElementById("category").value;
+
+        // Construct the new question object
+        const newQuestion = {
+            id: Date.now(), // Use a unique ID based on timestamp
+            question: questionText,
+            answers: answers
+        };
+
+        // Add the new question to the appropriate level and category
+        const levelIndex = app.findIndex(lvl => lvl.level.toLowerCase() === level.toLowerCase());
+        if (levelIndex !== -1) {
+            if (app[levelIndex].categories[category]) {
+                app[levelIndex].categories[category].push(newQuestion);
+            } else {
+                app[levelIndex].categories[category] = [newQuestion];
+            }
+        } else {
+            // Create a new level if it doesn't exist
+            app.push({
+                level: level.toUpperCase(),
+                categories: {
+                    [category]: [newQuestion]
+                }
+            });
+        }
+
+        // Save the updated app array to local storage
+        localStorage.setItem("questions", JSON.stringify(app));
+
+        // Display success message
+        alert("Question added successfully!");
+
+        // Refresh the question table
+        adminDisplayQuestions();
+    }
 
 
 
