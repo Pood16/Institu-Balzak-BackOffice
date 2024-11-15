@@ -1,4 +1,3 @@
-
 let questionns = [
   {
     level: "A1",
@@ -625,18 +624,42 @@ let questionns = [
 ];
 
 let userProgress = JSON.parse(localStorage.getItem('userProgress')) || {
+  username: "lahcen",
   currentLevel: 'A1',
   levels: {
-    A1: { grammar: false, vocabulary: false, comprehension: false },
-    A2: { grammar: false, vocabulary: false, comprehension: false },
-    B1: { grammar: false, vocabulary: false, comprehension: false },
-    B2: { grammar: false, vocabulary: false, comprehension: false },
-    C1: { grammar: false, vocabulary: false, comprehension: false },
-    C2: { grammar: false, vocabulary: false, comprehension: false }
+    A1: { 
+      grammar: [{ status: false, score: 0 }], 
+      vocabulary: [{ status: false, score: 0 }], 
+      comprehension: [{ status: false, score: 0 }] 
+    },
+    A2: { 
+      grammar: [{ status: false, score: 0 }], 
+      vocabulary: [{ status: false, score: 0 }], 
+      comprehension: [{ status: false, score: 0 }] 
+    },
+    B1: { 
+      grammar: [{ status: false, score: 0 }], 
+      vocabulary: [{ status: false, score: 0 }], 
+      comprehension: [{ status: false, score: 0 }] 
+    },
+    B2: { 
+      grammar: [{ status: false, score: 0 }], 
+      vocabulary: [{ status: false, score: 0 }], 
+      comprehension: [{ status: false, score: 0 }] 
+    },
+    C1: { 
+      grammar: [{ status: false, score: 0 }], 
+      vocabulary: [{ status: false, score: 0 }], 
+      comprehension: [{ status: false, score: 0 }] 
+    },
+    C2: { 
+      grammar: [{ status: false, score: 0 }], 
+      vocabulary: [{ status: false, score: 0 }], 
+      comprehension: [{ status: false, score: 0 }] 
+    }
   }
 };
 localStorage.setItem('userProgress', JSON.stringify(userProgress));
-
 
 const levelButtons = document.querySelectorAll('.btn');
 const subLevelButtons = document.querySelectorAll('.sub-btn');
@@ -647,12 +670,9 @@ const scoreElement = document.getElementById('header_score');
 const nextReplayButton = document.getElementById('next-replay');
 const subLevelButtonsContainer = document.getElementById('sub-levels');
 let categoryType = document.getElementById('category-type');
-let subTypeCategory = document.getElementById('sub-type-category');
 let updateSelectedLevelInCategories = document.getElementById('selected-level');
 
-
-
-// variables
+// Variables
 let score = 0;
 let timer = 10;
 let currentIndex = 0;
@@ -662,15 +682,14 @@ let timerId;
 let questions = [];
 let scoreInlocal = [];
 
-// Load sub-levels based on the selected level
+// levels
 levelButtons.forEach(button => {
   button.addEventListener('click', (event) => {
     const selectedLevel = event.target.innerText;
     
-    //   levels
     if (selectedLevel === userProgress.currentLevel) {
-        currentLevel = selectedLevel;
-        updateSelectedLevelInCategories.innerText = `niveau actuelle :${currentLevel}.`
+      currentLevel = selectedLevel;
+      updateSelectedLevelInCategories.innerText = `niveau actuelle :${currentLevel}.`;
       subLevelButtonsContainer.classList.remove('addRemove');
     } else {
       alert('Complete the current level to unlock this one.');
@@ -682,17 +701,13 @@ levelButtons.forEach(button => {
 subLevelButtons.forEach(button => {
   button.addEventListener('click', (event) => {
     currentCategory = event.target.innerText;
-    
-    categoryType.innerText = `categorie actuelle : ${currentCategory}.`  
+    categoryType.innerText = `categorie actuelle : ${currentCategory}.`;
 
-    
     const levelData = questionns.find(q => q.level === currentLevel);
     
 
-    
     if (levelData) {
-      questions = levelData.categories[currentCategory];
-  
+      questions = levelData.categories[currentCategory] || [];
       
     } else {
       questions = [];
@@ -704,7 +719,7 @@ subLevelButtons.forEach(button => {
       questionContainer.classList.remove('addRemove');
       startQuiz();
     } else {
-      alert('Pas de questions pour cette categories.');
+      alert('Pas de questions pour cette categorie.');
     }
   });
 });
@@ -714,8 +729,6 @@ function startQuiz() {
   showQuestion();
   startTimer();
 }
-//
-
 
 // Display question
 function showQuestion() {
@@ -735,7 +748,7 @@ function showQuestion() {
 
 // Check the users answer
 function checkAnswer(selectedIndex) {
-  clearInterval(timerId); 
+  clearInterval(timerId);
   if (questions[currentIndex].answers[selectedIndex].correct) {
     score++;
     scoreElement.textContent = `Score: ${score} / ${questions.length}`;
@@ -743,7 +756,7 @@ function checkAnswer(selectedIndex) {
   nextReplayButton.classList.remove('addRemove');
 }
 
-// Handle the next button click
+// next button
 nextReplayButton.addEventListener('click', () => {
   currentIndex++;
   if (currentIndex < questions.length) {
@@ -755,7 +768,7 @@ nextReplayButton.addEventListener('click', () => {
   }
 });
 
-// Start the timer
+// timer
 function startTimer() {
   clearInterval(timerId);
   timer = 10;
@@ -770,28 +783,32 @@ function startTimer() {
   }, 1000);
 }
 
-// Complete the quiz and update progress
+// Complete the quiz - update progress
 function completeQuiz() {
   alert(`Le test est terminé! votre Score: ${score} / ${questions.length}`);
   scoreInlocal.push(score);
   localStorage.setItem("scores", JSON.stringify(scoreInlocal));
-  // currentCategory.parentElement.Children[1].children[0].textContent = ` ${score} / ${questions.length}`;
-  if (score === questions.length) {
-  
-  userProgress.levels[currentLevel][currentCategory] = true;
 
-    // open new level
-    const allComplete = Object.values(userProgress.levels[currentLevel]).every(status => status);
-    
-    if (allComplete) {
-      const nextLevel = openNextLevel(currentLevel);
-      if (nextLevel) {
-        userProgress.currentLevel = nextLevel;
-        alert(`le niveau  ${nextLevel} est ouvert.`);
-      }
-    }
-    localStorage.setItem('userProgress', JSON.stringify(userProgress));
+  
+  if(score === 10){
+      userProgress.levels[currentLevel][currentCategory][0].status = true;
   }
+  userProgress.levels[currentLevel][currentCategory][0].score = score;
+
+  // open level
+  const allComplete = Object.values(userProgress.levels[currentLevel]).every(
+    category => category[0].status
+  );
+
+  if (allComplete) {
+    const nextLevel = openNextLevel(currentLevel);
+    if (nextLevel) {
+      userProgress.currentLevel = nextLevel;
+      alert(`Le niveau ${nextLevel} est ouvert.`);
+    }
+  }
+
+  localStorage.setItem('userProgress', JSON.stringify(userProgress));
   questionContainer.classList.add('addRemove');
 }
 
