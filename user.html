@@ -10,6 +10,9 @@
         .addRemove{
             display: none;
         }
+        .cursor {
+            cursor: no-drop;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -29,67 +32,44 @@
         <div id="level-container" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 text-white py-3 rounded shadow hover:bg-red-700 active:bg-red-800 w-full">
                     A1
                 </button>
-                <div class="absolute top-2.5 right-1">
-                        <i class="fa-solid fa-lock-open"></i>
-                </div>
             </div>
             
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 text-white py-3 rounded shadow hover:bg-red-700 active:bg-red-800 w-full">
                     A2
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 text-white py-3 rounded shadow hover:bg-red-700 active:bg-red-800 w-full">
                     B1
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 text-white py-3 rounded shadow hover:bg-red-700 active:bg-red-800 w-full">
                     B2
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 text-white py-3 rounded shadow hover:bg-red-700 active:bg-red-800 w-full">
                     C1
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 text-white py-3 rounded shadow hover:bg-red-700 active:bg-red-800 w-full">
                     C2
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
         </div>
 
@@ -99,25 +79,25 @@
                 <div>
                     <h2 id="selected-level" class="text-xl font-bold mb-4">niveau actuelle : </h2>
                 </div>
-                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">main menu</button>
+                <!-- <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">main menu</button> -->
             </div>
             <div class="quiz-categorie grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="relative">
-                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">grammar</button>
+                    <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">grammar</button>
                     <div class="absolute top-2.5 right-1">
-                        <span>0/10</span>
+                        <!-- <span>0/10</span> -->
                     </div>
                 </div>
                 <div class="relative">
-                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">vocabulary</button>
+                    <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">vocabulary</button>
                     <div class="absolute top-2.5 right-1">
-                        <span>0/10</span>
+                        <!-- <span>0/10</span> -->
                     </div>
                 </div>
                 <div class="relative">
-                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">comprehension</button>
+                    <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">comprehension</button>
                     <div class="absolute top-2.5 right-1">
-                        <span>0/10</span>
+                        <!-- <span>0/10</span> -->
                     </div>
                 </div>
                 
@@ -129,12 +109,12 @@
 
         <div id="questions-container" class="bg-white p-4 rounded shadow mt-5 addRemove">
             <div class=" flex justify-between p-4 pl-10 pr-5 border-b-2">
-                <h2 id="category-type">Grammaire</h2>
+                <h2 id="category-type"></h2>
                 <span id="timer">
                     <i class="fa-solid fa-stopwatch-20"></i>
-                    <span>Time left: 20s</span>
+                    <span></span>
                 </span>
-                <span id="header_score"> score : 0 / 10</span>
+                <span id="header_score"></span>
             </div>
             <div id="question-structure" class="pl-10 pr-10 p-2">
                 <h2 id="question">1.Quel est le temps verbal dans 'Il avait mangé' ?</h2>
@@ -165,5 +145,7 @@
         
     </div>
     <script src="js/user.js"></script>
+    <script src="js/json.js"></script>
+
 </body>
 </html>

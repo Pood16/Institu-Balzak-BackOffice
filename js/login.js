@@ -37,22 +37,47 @@ function usernameExists(username) {
 // Function to create a new user
 function createUser(username) {
     let newUserId = `TCF${String(users.length + 1).padStart(2, '0')}`;
-    let newUser = {
+    let newUserProgress = {
         id: newUserId,
         username: username,
-        progress: {
-            "A1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "A2": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "B1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "B2": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "C1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "C2": { grammar: [], vocabulary: [], compr: [], tentative: 0 }
-        },
-        currentLevel: "A1"
+        currentLevel: 'A1',
+        levels: {
+          A1: { 
+            grammar: [{ status: false, score: 0, tentative: 0}], 
+            vocabulary: [{ status: false, score: 0, tentative: 0}], 
+            comprehension: [{ status: false, score: 0, tentative: 0}] 
+          },
+          A2: { 
+            grammar: [{ status: false, score: 0, tentative: 0}], 
+            vocabulary: [{ status: false, score: 0, tentative: 0}], 
+            comprehension: [{ status: false, score: 0, tentative: 0}] 
+          },
+          B1: { 
+            grammar: [{ status: false, score: 0, tentative: 0}], 
+            vocabulary: [{ status: false, score: 0, tentative: 0}], 
+            comprehension: [{ status: false, score: 0, tentative: 0}] 
+          },
+          B2: { 
+            grammar: [{ status: false, score: 0, tentative: 0}], 
+            vocabulary: [{ status: false, score: 0, tentative: 0}], 
+            comprehension: [{ status: false, score: 0, tentative: 0}] 
+          },
+          C1: { 
+            grammar: [{ status: false, score: 0, tentative: 0}], 
+            vocabulary: [{ status: false, score: 0, tentative: 0}], 
+            comprehension: [{ status: false, score: 0, tentative: 0}] 
+          },
+          C2: { 
+            grammar: [{ status: false, score: 0, tentative: 0}], 
+            vocabulary: [{ status: false, score: 0, tentative: 0}], 
+            comprehension: [{ status: false, score: 0, tentative: 0}] 
+          }
+        }
     };
-    users.push(newUser);
+    
+    users.push(newUserProgress);
     localStorage.setItem('utilisateurs', JSON.stringify(users));
-    return newUser;
+    return newUserProgress;
 }
 
 // Sign Up button event listener
