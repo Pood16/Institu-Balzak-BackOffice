@@ -13,6 +13,9 @@
         .addRemove{
             display: none;
         }
+        .cursor {
+            cursor: no-drop;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -20,11 +23,11 @@
         <!-- Header  -->
         <div class="flex justify-between items-center bg-white p-4 rounded shadow mb-6">
             <div>
-                <h1 class="text-2xl font-bold">bonjours, <span id="username">Lahcen</span>!</h1>
+                <h1 class="text-2xl font-bold">bonjour, <span id="username-bar">Lahcen</span>!</h1>
             </div>
             <a href="login.html">
 
-                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Log Out</button>
+                <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Log Out</button>
             </a>
         </div>
 
@@ -32,95 +35,72 @@
         <div id="level-container" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-green-600 hover:bg-green-700 active:bg-green-800 text-white py-3 rounded shadow  w-full">
                     A1
                 </button>
-                <div class="absolute top-2.5 right-1">
-                        <i class="fa-solid fa-lock-open"></i>
-                </div>
             </div>
             
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 rounded shadow w-full">
                     A2
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 rounded shadow w-full">
                     B1
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 rounded shadow w-full">
                     B2
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 rounded shadow w-full">
                     C1
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
 
             
             <div class="relative">
-                <button class="btn bg-blue-500 text-white py-3 rounded shadow hover:bg-blue-600 w-full">
+                <button class="btn bg-red-600 hover:bg-red-700 active:bg-red-800 text-white py-3 rounded shadow w-full">
                     C2
                 </button>
-                <div class="absolute top-2.5 right-1">
-                    <i class="fa-solid fa-lock text-black"></i>
-                    <i class="fa-solid fa-lock-open addRemove"></i>
-                </div>
             </div>
         </div>
 
         <!-- Categories -->
-        <div id="sub-levels" class="bg-white p-4 rounded shadow addRemove">
+        <div id="sub-levels" class="bg-white p-4 rounded shadow addRemove"> <!-- add addRemove -->
             <div class="sub-header flex justify-between items-center bg-white p-4 rounded shadow mb-6">
                 <div>
                     <h2 id="selected-level" class="text-xl font-bold mb-4">niveau actuelle : </h2>
                 </div>
-                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">main menu</button>
+                <!-- <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">main menu</button> -->
             </div>
             <div class="quiz-categorie grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="relative">
-                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">grammar</button>
-                    <div class="absolute top-2.5 right-1">
-                        <span>0/10</span>
+                    <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">grammar</button>
+                    <div class="absolute top-1.5 right-1">
+                        <span class="text-gray-200 block border-2 rounded-full p-1 score_value">0/3</span>
                     </div>
                 </div>
                 <div class="relative">
-                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">vocabulary</button>
-                    <div class="absolute top-2.5 right-1">
-                        <span>0/10</span>
+                    <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">vocabulary</button>
+                    <div class="absolute top-1.5 right-1">
+                        <span class="text-gray-200 block border-2 rounded-full p-1 score_value">0/3</span>
                     </div>
                 </div>
                 <div class="relative">
-                    <button class="sub-btn bg-green-500 text-white py-3 rounded shadow w-full hover:bg-green-600">comprehension</button>
-                    <div class="absolute top-2.5 right-1">
-                        <span>0/10</span>
+                    <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">comprehension</button>
+                    <div class="absolute top-1.5 right-1">
+                        <span class="text-gray-200 block border-2 rounded-full p-1 score_value">0/3</span>
                     </div>
                 </div>
                 
@@ -132,12 +112,12 @@
 
         <div id="questions-container" class="bg-white p-4 rounded shadow mt-5 addRemove">
             <div class=" flex justify-between p-4 pl-10 pr-5 border-b-2">
-                <h2 id="category-type">Grammaire</h2>
+                <h2 id="category-type"></h2>
                 <span id="timer">
                     <i class="fa-solid fa-stopwatch-20"></i>
-                    <span>Time left: 20s</span>
+                    <span></span>
                 </span>
-                <span id="header_score"> score : 0 / 10</span>
+                <span id="header_score"></span>
             </div>
             <div id="question-structure" class="pl-10 pr-10 p-2">
                 <h2 id="question">1.Quel est le temps verbal dans 'Il avait mangé' ?</h2>
@@ -168,5 +148,8 @@
         
     </div>
     <script src="js/user.js"></script>
+    <script src="js/admin.js"></script>
+
+
 </body>
 </html>
