@@ -1,32 +1,53 @@
-
 let container = document.getElementById('container');
 
 toggle = () => {
-	container.classList.toggle('sign-in');
-	container.classList.toggle('sign-up');
-	
-	const signInForm = document.querySelector('.form.sign-in');
-	const signUpForm = document.querySelector('.form.sign-up');
+    container.classList.toggle('sign-in');
+    container.classList.toggle('sign-up');
+    
+    const signInForm = document.querySelector('.form.sign-in');
+    const signUpForm = document.querySelector('.form.sign-up');
 
-	if (container.classList.contains('sign-in')) {
-		signInForm.classList.add('opacity-100', 'translate-x-0');
-		signInForm.classList.remove('opacity-0', 'translate-x-full');
-		signUpForm.classList.add('opacity-0', 'translate-x-full', 'hidden');
-		signUpForm.classList.remove('opacity-100', 'translate-x-0');
-	} else {
-		signUpForm.classList.add('opacity-100', 'translate-x-0');
-		signUpForm.classList.remove('opacity-0', 'translate-x-full', 'hidden');
-		signInForm.classList.add('opacity-0', 'translate-x-full');
-		signInForm.classList.remove('opacity-100', 'translate-x-0');
-	}
+    if (container.classList.contains('sign-in')) {
+        signInForm.classList.add('opacity-100', 'translate-x-0');
+        signInForm.classList.remove('opacity-0', 'translate-x-full');
+        signUpForm.classList.add('opacity-0', 'translate-x-full', 'hidden');
+        signUpForm.classList.remove('opacity-100', 'translate-x-0');
+    } else {
+        signUpForm.classList.add('opacity-100', 'translate-x-0');
+        signUpForm.classList.remove('opacity-0', 'translate-x-full', 'hidden');
+        signInForm.classList.add('opacity-0', 'translate-x-full');
+        signInForm.classList.remove('opacity-100', 'translate-x-0');
+    }
 };
 
 let users = JSON.parse(localStorage.getItem('utilisateurs')) || [];
 
-setTimeout(() => {
-	container.classList.add('sign-in');
-}, 200);
+// Ensure admin account exists
+document.addEventListener("DOMContentLoaded", function () {
+    if (!users.some(user => user.username === "admin")) {
+        users.push({ username: "admin", password: "admin123" });
+        localStorage.setItem('utilisateurs', JSON.stringify(users));
+    }
 
+    // Redirect if already logged in
+    if (sessionStorage.getItem("connected")) {
+        window.location.href = 'user.html';
+    }
+});
+
+// Show or hide the password field dynamically
+document.addEventListener("DOMContentLoaded", function () {
+    const usernameInput = document.getElementById("username");
+    const passwordContainer = document.getElementById("password-container");
+
+    usernameInput.addEventListener("input", function () {
+        if (usernameInput.value.toLowerCase().includes("admin")) {
+            passwordContainer.classList.remove("hidden"); // Show password field
+        } else {
+            passwordContainer.classList.add("hidden"); // Hide password field
+        }
+    });
+});
 
 // Function to validate if the username already exists
 function usernameExists(username) {
@@ -35,11 +56,12 @@ function usernameExists(username) {
 }
 
 // Function to create a new user
-function createUser(username) {
+function createUser(username, password) {
     let newUserId = `TCF${String(users.length + 1).padStart(2, '0')}`;
     let newUser = {
         id: newUserId,
         username: username,
+        password: password,
         progress: {
             "A1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
             "A2": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
@@ -56,38 +78,52 @@ function createUser(username) {
 }
 
 // Sign Up button event listener
-document.querySelector('.sign-up button').addEventListener('click', function() {
+document.querySelector('.sign-up button').addEventListener('click', function () {
     let usernameInput = document.querySelector('.sign-up input[placeholder="Username"]');
+    let passwordInput = document.querySelector('.sign-up input[placeholder="Password"]');
     let username = usernameInput.value.trim();
+    let password = passwordInput ? passwordInput.value.trim() : "";
+
+    if (username.toLowerCase().includes("admin")) {
+        alert("Username cannot contain 'admin'.");
+        return;
+    }
 
     if (usernameExists(username)) {
         alert('Username already used');
     } else {
-        const user = createUser(username);
-        sessionStorage.setItem("connected",JSON.stringify(user));
+        const user = createUser(username, password);
+        sessionStorage.setItem("connected", JSON.stringify(user));
         alert('User created successfully');
         usernameInput.value = ''; // Clear the input field
+        if (passwordInput) passwordInput.value = ''; // Clear password field if present
         window.location.href = 'user.html'; // Redirect to user.html
     }
 });
 
 // Sign In button event listener
-document.getElementById('sign-in').addEventListener('click', function() {
+document.getElementById('sign-in').addEventListener('click', function () {
     let usernameInput = document.getElementById('username');
+    let passwordInput = document.getElementById('password');
     let username = usernameInput.value.trim();
+    let password = passwordInput ? passwordInput.value.trim() : "";
 
-    if (usernameExists(username)) {
-        // console.log(usernameExists(username));
-        let connected = users.find( (user) => user.username == username );
-        sessionStorage.setItem("connected",JSON.stringify(connected));
-        // window.location.href = 'user.html';
+    let user = users.find(user => user.username === username && user.password === password);
+
+    if (user) {
+        sessionStorage.setItem("connected", JSON.stringify(user));
+        if (username === "admin") {
+            window.location.href = 'index.html'; // Admin redirect
+        } else {
+            window.location.href = 'user.html'; // Regular user redirect
+        }
     } else {
-        alert('User not found');
+        alert("Invalid username or password");
     }
 });
 
-document.addEventListener("DOMContentLoaded",function(){
-    if(sessionStorage.getItem("connected")){
-        window.location.href = 'user.html'
-    }
-})
+// Logout button event listener
+document.getElementById("logout").addEventListener("click", function () {
+    sessionStorage.removeItem("connected");
+    window.location.href = "login.html";
+});

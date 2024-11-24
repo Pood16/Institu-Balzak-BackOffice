@@ -50,7 +50,7 @@
         <header class="bg-white shadow-sm fixed top-0 right-0 left-64 transition-all duration-300">
             <div class="flex justify-end items-center h-16 px-4">
                 <div class="flex items-center space-x-4">
-                    <span class="text-gray-700" id="admin-name">Admin</span>
+                    <span class="text-gray-700" id="admin-name">Admin User</span>
                     <button
                         class="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                         id="logout">
@@ -63,41 +63,56 @@
 
         <!-- Main Content Container -->
         <main class="p-6 mt-16">
-            <div class="bg-white rounded-lg p-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
                 <!-- Filter Row -->
-                <div class="flex items-center justify-between shadow-sm mb-6">
+                <div class="flex items-center justify-between mb-6">
                     <div class="flex space-x-4">
                         <div>
-                            <label for="category" class="text-gray-700 font-medium">Utilisateurs</label>
-                            <input type="search" placeholder="Surnom" class=" p-1 ml-2 pl-5 rounded-lg bg-gray-100 border">
-
+                            <label for="date" class="text-gray-700 font-medium">Date</label>
+                            <select id="date"
+                                class="bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="oldest">Plus ancien</option>
+                                <option value="latest">Plus récent</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="level" class="text-gray-700 font-medium">Niveau</label>
+                            <select id="level"
+                                class="bg-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All</option>
+                                <option value="a1">A1</option>
+                                <option value="a2">A2</option>
+                                <option value="b1">B1</option>
+                                <option value="b2">B2</option>
+                                <option value="c1">C1</option>
+                                <option value="c2">C2</option>
+                            </select>
                         </div>
                     </div>
+                    <input type="text" placeholder="Rechercher par nom d'utilisateur..."
+                        class=" search-box w-full md:w-1/3 bg-white border border-gray-300 text-gray-700 rounded-lg py-2 px-4 mb-4 md:mb-0" />
                 </div>
-                            <!-- General Statistics Graph Section -->
-                            <div class="bg-white rounded-lg p-6 mt-8">
-                            <h2 class="text-gray-700 font-bold mb-4">Statistiques Générales et Tableau de Bord</h2>
-                              <div class="flex flex-wrap">
-                            <!-- Success Rate Chart -->
-                            <div class="w-full lg:w-1/2 p-4">
-                            <h3 class="text-gray-600 font-semibold mb-2">Taux de Réussite Global</h3>
-                              <canvas id="successRateChart" class="w-full h-64"></canvas>
-                            </div>
 
-                              <!-- Attempts per Level Chart -->
-                          <div class="w-full lg:w-1/2 p-4">
-                          <h3 class="text-gray-600 font-semibold mb-2">Tentatives par Niveau</h3>
-                         <canvas id="attemptsLevelChart" class="w-full h-64"></canvas>
-                          </div>
-    </div>
-</div>
-
+                <!-- Questions Table -->
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="py-2 px-4 text-left">Nom</th>
+                            <th class="py-2 px-4 text-left">Niveau</th>
+                            <th class="py-2 px-4 text-left">Categorie</th>
+                            <th class="py-2 px-4 text-center">Score</th>
+                            <th class="py-2 px-4 text-center">Date de Test</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be dynamically generated here -->
+                    </tbody>
+                </table>
             </div>
         </main>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/Stats.js"></script>
+    <script src="js/users.js">
+    </script>
 </body>
 
 </html>
