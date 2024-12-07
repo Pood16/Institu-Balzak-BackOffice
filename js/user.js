@@ -3,14 +3,14 @@ document.getElementById('logout-button').addEventListener('click', function() {
   location.reload();
 });
 
-// document.addEventListener("DOMContentLoaded", function() {
-//   if (sessionStorage.getItem("connected") === null) {
-//     window.location.href = 'login.html';
-//     return;
-//   }
-//   start();
-// });
-start();
+document.addEventListener("DOMContentLoaded", function() {
+  if (sessionStorage.getItem("connected") === null) {
+    window.location.href = 'login.html';
+    return;
+  }
+  start();
+});
+
 function start() {
   // DOM 
   const levelButtons = document.querySelectorAll('.btn');
