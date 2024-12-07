@@ -43,34 +43,34 @@ function createUser(username) {
         currentLevel: 'A1',
         levels: {
           A1: { 
-            grammar: [{ status: false, score: 0, tentative: 0}], 
-            vocabulary: [{ status: false, score: 0, tentative: 0}], 
-            comprehension: [{ status: false, score: 0, tentative: 0}] 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
           },
           A2: { 
-            grammar: [{ status: false, score: 0, tentative: 0}], 
-            vocabulary: [{ status: false, score: 0, tentative: 0}], 
-            comprehension: [{ status: false, score: 0, tentative: 0}] 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
           },
           B1: { 
-            grammar: [{ status: false, score: 0, tentative: 0}], 
-            vocabulary: [{ status: false, score: 0, tentative: 0}], 
-            comprehension: [{ status: false, score: 0, tentative: 0}] 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1]  
           },
           B2: { 
-            grammar: [{ status: false, score: 0, tentative: 0}], 
-            vocabulary: [{ status: false, score: 0, tentative: 0}], 
-            comprehension: [{ status: false, score: 0, tentative: 0}] 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
           },
           C1: { 
-            grammar: [{ status: false, score: 0, tentative: 0}], 
-            vocabulary: [{ status: false, score: 0, tentative: 0}], 
-            comprehension: [{ status: false, score: 0, tentative: 0}] 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1]  
           },
           C2: { 
-            grammar: [{ status: false, score: 0, tentative: 0}], 
-            vocabulary: [{ status: false, score: 0, tentative: 0}], 
-            comprehension: [{ status: false, score: 0, tentative: 0}] 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
           }
         }
     };

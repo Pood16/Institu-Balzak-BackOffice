@@ -54,7 +54,7 @@ function start() {
       break;
     }
   }
-  console.log(userProgress);
+
   //updates
   updateLevelStyles();
   updateCategoryStyles();
