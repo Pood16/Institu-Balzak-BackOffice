@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User</title>
-    <script src="tailwind.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>User interface</title>
+
     <style>
         .addRemove{
             display: none;
@@ -27,7 +29,18 @@
                 <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Log Out</button>
             </a>
         </div>
-
+        <!--  -->
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md max-w-2xl mx-auto my-5">
+            <h1 class="text-2xl font-bold text-red-600 mb-4">Lire attentivement!</h1>
+            <ul class="list-disc list-inside text-gray-700 space-y-2">
+              <li class="font-medium">Vous avez 6 niveaux</li>
+              <li class="font-medium">Dans chaque niveau Vous avez 3 catégories</li>
+              <li class="font-medium">
+                Le passage d'un niveau à l'autre nécessite d'obtenir 10/10 dans chaque catégorie
+              </li>
+              <li class="font-medium">Vous avez 10 secondes pour répondre à chaque question</li>
+            </ul>
+          </div>
         <!-- Level Buttons -->
         <div id="level-container" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
             
@@ -79,26 +92,19 @@
                 <div>
                     <h2 id="selected-level" class="text-xl font-bold mb-4">niveau actuelle : </h2>
                 </div>
-                <!-- <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">main menu</button> -->
             </div>
             <div class="quiz-categorie grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="relative">
+                <div class="relative score-parent">
                     <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">grammar</button>
-                    <div class="absolute top-1.5 right-1">
-                        <span class="text-gray-200 block border-2 rounded-full p-1 score_value">0/3</span>
-                    </div>
+                    
                 </div>
-                <div class="relative">
+                <div class="relative score-parent">
                     <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">vocabulary</button>
-                    <div class="absolute top-1.5 right-1">
-                        <span class="text-gray-200 block border-2 rounded-full p-1 score_value">0/3</span>
-                    </div>
+                    
                 </div>
-                <div class="relative">
+                <div class="relative score-parent">
                     <button class="sub-btn bg-rose-500 text-white py-3 rounded shadow w-full hover:bg-rose-600 active:bg-rose-700">comprehension</button>
-                    <div class="absolute top-1.5 right-1">
-                        <span class="text-gray-200 block border-2 rounded-full p-1 score_value">0/3</span>
-                    </div>
+                    
                 </div>
                 
             </div>
@@ -145,7 +151,9 @@
         
     </div>
     <script src="js/user.js"></script>
-    <script src="js/admin.js"></script>
+    <!-- <script src="js/admin.js"></script> -->
+    <script src="json.js"></script>
+
 
 
 </body>
