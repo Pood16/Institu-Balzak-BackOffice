@@ -1,36 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
     let users = JSON.parse(localStorage.getItem('utilisateurs')) || [];
-
     const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
     // Calculate attemptsData
-    const attemptsData = {
-        labels: levels,
-        data: levels.map(level => {
-            let totalAttempts = 0;
-            let count = 0;
-            users.forEach(user => {
-                if (user.progress && user.progress[level]) {
-                    totalAttempts += user.progress[level].tentative || 0;
-                    count++;
-                }
-            });
-            return count > 0 ? (totalAttempts / count) : 0;
-        })
+    const calculateAttemptsData = (users) => {
+        return {
+            labels: levels,
+            data: levels.map(level => {
+                let totalAttempts = 0;
+                let count = 0;
+
+                users.forEach(user => {
+                    if (user.levels && user.levels[level]) {
+                        // Sum attempts for all categories in this level
+                        const categories = user.levels[level];
+                        const levelAttempts = Object.values(categories)
+                            .map(category => category[2] || 0) // Extract the number of attempts
+                            .reduce((sum, attempts) => sum + attempts, 0);
+
+                        totalAttempts += levelAttempts;
+                        count++;
+                    }
+                });
+
+                return count > 0 ? (totalAttempts / count).toFixed(2) : 0;
+            })
+        };
     };
 
     // Calculate successRateData
-    const successRateData = {
-        labels: levels,
-        data: levels.map(level => {
-            let count = users.filter(user => {
-                const levelIndex = levels.indexOf(level);
-                const userLevelIndex = levels.indexOf(user.currentLevel);
-                return userLevelIndex >= levelIndex;
-            }).length;
-            return users.length > 0 ? ((count / users.length) * 100).toFixed(2) : 0;
-        })
+    const calculateSuccessRateData = (users) => {
+        return {
+            labels: levels,
+            data: levels.map(level => {
+                const completedCount = users.filter(user => {
+                    if (user.levels && user.levels[level]) {
+                        const categories = user.levels[level];
+                        // Check if all categories are marked as completed
+                        return Object.values(categories).every(category => category[1] === true);
+                    }
+                    return false;
+                }).length;
+
+                return users.length > 0 ? ((completedCount / users.length) * 100).toFixed(2) : 0;
+            })
+        };
     };
+
+    // Get the calculated data
+    const attemptsData = calculateAttemptsData(users);
+    const successRateData = calculateSuccessRateData(users);
 
     // Taux de Réussite Global Chart
     const successRateCtx = document.getElementById('successRateChart').getContext('2d');
@@ -96,17 +115,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-});
-
-// Logout functionality
-document.getElementById('logout').addEventListener('click', () => {
-    sessionStorage.clear();
-    location.reload();
-});
-
-// Authentication check
-document.addEventListener("DOMContentLoaded", () => {
-    if (sessionStorage.getItem("connected") === null) {
-        window.location.href = 'login.html';
-    }
 });

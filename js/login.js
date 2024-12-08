@@ -56,25 +56,48 @@ function usernameExists(username) {
 }
 
 // Function to create a new user
-function createUser(username, password) {
+function createUser(username) {
     let newUserId = `TCF${String(users.length + 1).padStart(2, '0')}`;
-    let newUser = {
+    let newUserProgress = {
         id: newUserId,
         username: username,
-        password: password,
-        progress: {
-            "A1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "A2": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "B1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "B2": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "C1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "C2": { grammar: [], vocabulary: [], compr: [], tentative: 0 }
-        },
-        currentLevel: "A1"
+        currentLevel: 'A1',
+        levels: {
+          A1: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          A2: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          B1: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          B2: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          C1: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          C2: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1]
+          }
+        }
     };
-    users.push(newUser);
+    users.push(newUserProgress);
     localStorage.setItem('utilisateurs', JSON.stringify(users));
-    return newUser;
+    return newUserProgress;
 }
 
 // Sign Up button event listener
@@ -107,12 +130,12 @@ document.getElementById('sign-in').addEventListener('click', function () {
     let passwordInput = document.getElementById('password');
     let username = usernameInput.value.trim();
     let password = passwordInput ? passwordInput.value.trim() : "";
-
+    
     let user = users.find(user => user.username === username && user.password === password);
 
     if (user) {
         sessionStorage.setItem("connected", JSON.stringify(user));
-        if (username === "admin") {
+        if (username === "admin" && password === "admin123") {
             window.location.href = 'index.html'; // Admin redirect
         } else {
             window.location.href = 'user.html'; // Regular user redirect
