@@ -3,6 +3,13 @@ document.getElementById('logout-button').addEventListener('click', function() {
   location.reload();
 });
 
+
+document.getElementById('logout-button').addEventListener('click', function() {
+  sessionStorage.clear();
+  location.reload();
+});
+
+
 document.addEventListener("DOMContentLoaded", function() {
   if (sessionStorage.getItem("connected") === null) {
     window.location.href = 'login.html';
@@ -10,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   start();
 });
+
 
 function start() {
   // DOM 
@@ -49,15 +57,18 @@ function start() {
   // active user progress
   for (let i = 0; i < users.length; i++) {
     if (users[i].username === activeUserInformation.username) {
+
       userProgress = users[i];
       activeIndex = i;
       break;
     }
   }
 
+
   //updates
   updateLevelStyles();
   updateCategoryStyles();
+
 
   function updateLevelStyles() {
     for (let i = 0; i < levelButtons.length; i++) {
@@ -87,7 +98,9 @@ function start() {
       
       if (currentLevel && userProgress.levels[currentLevel]) {
         if (userProgress.levels[currentLevel][category]) {
+
           if (userProgress.levels[currentLevel][category][1]  ) {
+
             button.classList.add("bg-green-500", "hover:bg-green-600", "active:bg-green-700");
           } else {
             button.classList.add("bg-rose-500", "hover:bg-rose-600", "active:bg-rose-700");
@@ -99,9 +112,11 @@ function start() {
     }
   }
 
+
   
 
   // questions array length
+
   function totalQuestionsForCategory(level, category) {
     for (let i = 0; i < questionns.length; i++) {
       if (questionns[i].level === level) {
@@ -115,7 +130,9 @@ function start() {
 
   // levels
   for (let i = 0; i < levelButtons.length; i++) {
+
       levelButtons[i].addEventListener('click', function(event) {
+
       let selectedLevel = event.target.innerText;
       let currentLevelIndex = levels.indexOf(userProgress.currentLevel);
       let selectedLevelIndex = levels.indexOf(selectedLevel);
@@ -125,6 +142,8 @@ function start() {
         updateSelectedLevelInCategories.innerText = "niveau actuelle : " + currentLevel;
         subLevelButtonsContainer.classList.remove('addRemove');
         updateCategoryStyles();
+
+
       } else {
         alert('Complete the current level to unlock this one.');
       }
@@ -252,6 +271,7 @@ function start() {
     }, 1000);
   }
 
+
   nextReplayButton.addEventListener('click', function() {
     currentIndex = currentIndex + 1;
     if (currentIndex < questions.length) {
@@ -282,17 +302,20 @@ function start() {
     let allComplete = true;
     for (let category in userProgress.levels[currentLevel]) {
       if (!userProgress.levels[currentLevel][category][1]) {
+
         allComplete = false;
         break;
       }
     }
 
-  
+
+
     if (allComplete) {
       let currentLevelIndex = levels.indexOf(currentLevel);
       if (currentLevelIndex < levels.length - 1) {
         let nextLevel = levels[currentLevelIndex + 1];
         userProgress.currentLevel = nextLevel;
+
         updateLevelStyles();
         alert("Le niveau " + nextLevel + " est ouvert.");
       }
@@ -305,5 +328,6 @@ function start() {
     questionContainer.classList.add('addRemove');
     updateCategoryStyles();
     
+
   }
 }
