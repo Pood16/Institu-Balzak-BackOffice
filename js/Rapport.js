@@ -1,74 +1,52 @@
-// Example data structure for rows
-const data = JSON.parse(localStorage.getItem("quizData")) || [
-    {
-        questions: 10,
-        correctAnswers: 8,
-        incorrectAnswers: 2,
-        score: 80,
-        level: "Intermediate",
-        downloadLink: "#"
-    }
-];
-
-// Function to load data and insert rows into the table
-function loadTableData() {
-    const tableBody = document.getElementById("dataRows");
-    tableBody.innerHTML = ""; // Clear any existing rows
-
-    data.forEach((item) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td class="py-2 px-4">${item.questions}</td>
-            <td class="py-2 px-4">${item.correctAnswers}</td>
-            <td class="py-2 px-4">${item.incorrectAnswers}</td>
-            <td class="py-2 px-4">${item.score}</td>
-            <td class="py-2 px-4">${item.level}</td>
-            <td class="py-2 px-4">
-                <a href="${item.downloadLink}" class="text-blue-500 hover:underline">Télécharger</a>
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
-
-// Function to populate the dynamic table with data from localStorage
+// Function to populate the dynamic table with user data from localStorage
 function populateDynamicTable() {
-    const users = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    const answerStates = JSON.parse(localStorage.getItem("saveUserQuestionStatu")) || [];
+    const users = JSON.parse(localStorage.getItem("utilisateurs")) || [];  // Retrieve users from localStorage
     const tableBody = document.querySelector("tbody");
 
     // Clear existing table rows
     tableBody.innerHTML = "";
 
+    if (users.length === 0) {
+        console.log("No users found in localStorage.");
+        return;
+    }
+
     // Iterate over each user
     users.forEach((user) => {
         const username = user.username;
+        const userId = user.id || "N/A";
+        const currentLevel = user.currentLevel || "N/A";
 
-        // Skip Admin account
-        if (username.toLowerCase() === "admin") {
-            return;
-        }
+        // Initialize stats
+        let totalQuestions = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
 
-        const userId = user.id || user.newUserId;
-        const currentLevel = user.currentLevel;
-        const userAnswers = answerStates.filter(state => state.username === username);
-        const totalQuestions = userAnswers.length;
-        const correctAnswers = userAnswers.filter(answer => answer.answerState === true).length;
-        const incorrectAnswers = userAnswers.filter(answer => answer.answerState === false).length;
-        const score = correctAnswers;
+        // Calculate stats from the user's levels (A1 - C2)
+        Object.values(user.levels).forEach(level => {
+            Object.values(level).forEach(category => {
+                const [questions, completed, attempts] = category;
 
-        // Create row
+                // Update counts based on the `questions` array
+                totalQuestions += questions.length; // Total attempted questions
+                correctAnswers += questions.filter(q => q.correct === true).length; // Correct answers
+                incorrectAnswers += questions.filter(q => q.correct === false).length; // Incorrect answers
+            });
+        });
+
+        const score = correctAnswers; // Score is the total correct answers
+
+        // Create a new row for the user
         const row = document.createElement("tr");
         row.classList.add("border-b");
         row.innerHTML = `
-            <td class="py-2 px-4">${userId || "N/A"}</td>
-            <td class="py-2 px-7">${username || "N/A"}</td>
+            <td class="py-2 px-4">${userId}</td>
+            <td class="py-2 px-7">${username}</td>
             <td class="py-2 px-20">${totalQuestions}</td>
             <td class="py-2 px-20">${correctAnswers}</td>
             <td class="py-2 px-20">${incorrectAnswers}</td>
             <td class="py-2 px-12">${score}</td>
-            <td class="py-2 px-12">${currentLevel || "N/A"}</td>
+            <td class="py-2 px-12">${currentLevel}</td>
             <td class="py-2 px-5 text-blue-500 cursor-pointer">
                 <button class="download-btn" data-username="${username}" data-id="${userId}" data-questions="${totalQuestions}" data-correct="${correctAnswers}" data-incorrect="${incorrectAnswers}" data-score="${score}" data-level="${currentLevel}">
                     Télécharger
@@ -82,8 +60,27 @@ function populateDynamicTable() {
     const downloadButtons = document.querySelectorAll(".download-btn");
     downloadButtons.forEach((button) => {
         button.addEventListener("click", (event) => {
-            const userData = event.target.dataset;
-            console.log("User data for PDF:", userData); // Debug log
+            const {
+                username,
+                id,
+                questions,
+                correct,
+                incorrect,
+                score,
+                level
+            } = event.target.dataset;
+
+            const userData = {
+                username,
+                id,
+                totalQuestions: questions,
+                correctAnswers: correct,
+                incorrectAnswers: incorrect,
+                score,
+                currentLevel: level
+            };
+
+            console.log("Generating PDF with user data:", userData); // Debug log
             generatePDF(userData);
         });
     });
@@ -91,35 +88,42 @@ function populateDynamicTable() {
 
 // Function to generate a PDF for the user's stats
 function generatePDF(userData) {
-    const { username, id, questions, correct, incorrect, score, level } = userData;
+    const {
+        username,
+        id,
+        totalQuestions,
+        correctAnswers,
+        incorrectAnswers,
+        score,
+        currentLevel
+    } = userData;
     const { jsPDF } = window.jspdf;
 
     const doc = new jsPDF();
+
+    // Set title
     doc.setFontSize(16);
     doc.text(`Statistiques de l'utilisateur: ${username}`, 10, 10);
+
+    // Add user details
     doc.setFontSize(12);
     doc.text(`ID: ${id}`, 10, 20);
-    doc.text(`Questions posées: ${questions}`, 10, 30);
-    doc.text(`Réponses correctes: ${correct}`, 10, 40);
-    doc.text(`Réponses incorrectes: ${incorrect}`, 10, 50);
+    doc.text(`Questions posées: ${totalQuestions}`, 10, 30);
+    doc.text(`Réponses correctes: ${correctAnswers}`, 10, 40);
+    doc.text(`Réponses incorrectes: ${incorrectAnswers}`, 10, 50);
     doc.text(`Score total: ${score}`, 10, 60);
-    doc.text(`Niveau atteint: ${level || "N/A"}`, 10, 70);
+    doc.text(`Niveau atteint: ${currentLevel || "N/A"}`, 10, 70);
 
+    // Save the PDF with a user-specific filename
     doc.save(`${username}_stats.pdf`);
 }
 
-// Load table on page load
+// Ensure the page is loaded and populate the dynamic table with users
 document.addEventListener("DOMContentLoaded", () => {
-    populateDynamicTable();
+    populateDynamicTable(); // Populate dynamic data from users in localStorage
 });
 
-// Logout functionality
-document.getElementById('logout').addEventListener('click', () => {
-    sessionStorage.clear();
-    location.reload();
-});
-
-// Authentication check
+// Ensure authentication
 document.addEventListener("DOMContentLoaded", () => {
     if (sessionStorage.getItem("connected") === null) {
         window.location.href = 'login.html';
