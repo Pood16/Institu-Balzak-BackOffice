@@ -4,12 +4,6 @@ document.getElementById('logout-button').addEventListener('click', function() {
 });
 
 
-document.getElementById('logout-button').addEventListener('click', function() {
-  sessionStorage.clear();
-  location.reload();
-});
-
-
 document.addEventListener("DOMContentLoaded", function() {
   if (sessionStorage.getItem("connected") === null) {
     window.location.href = 'login.html';
@@ -133,20 +127,20 @@ function start() {
 
       levelButtons[i].addEventListener('click', function(event) {
 
-      let selectedLevel = event.target.innerText;
-      let currentLevelIndex = levels.indexOf(userProgress.currentLevel);
-      let selectedLevelIndex = levels.indexOf(selectedLevel);
-      
-      if (selectedLevelIndex <= currentLevelIndex) {
-        currentLevel = selectedLevel;
-        updateSelectedLevelInCategories.innerText = "niveau actuelle : " + currentLevel;
-        subLevelButtonsContainer.classList.remove('addRemove');
-        updateCategoryStyles();
+        let selectedLevel = event.target.innerText;
+        let currentLevelIndex = levels.indexOf(userProgress.currentLevel);
+        let selectedLevelIndex = levels.indexOf(selectedLevel);
+        
+        if (selectedLevelIndex <= currentLevelIndex) {
+          currentLevel = selectedLevel;
+          updateSelectedLevelInCategories.innerText = "niveau actuelle : " + currentLevel;
+          subLevelButtonsContainer.classList.remove('addRemove');
+          updateCategoryStyles();
 
 
-      } else {
-        alert('Complete the current level to unlock this one.');
-      }
+        } else {
+          alert('Complete the current level to unlock this one.');
+        }
     });
   }
 
@@ -183,30 +177,32 @@ function start() {
   }
 
   function showQuestion() {
-      if (currentIndex < questions.length) {
-          nextReplayButton.classList.add('addRemove');
-          let questionHtml = '<h2 id="question">' + (currentIndex + 1) + '. ' + questions[currentIndex].question + '</h2>';
-          questionHtml += '<div id="answer-buttons">';
-          
-          
-          for (let i = 0; i < questions[currentIndex].answers.length; i++) {
-              questionHtml += '<button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 border border-blue-700 rounded text-left" data-index="' + i + '">';
-              questionHtml += '<span class="text-2xl">' + questions[currentIndex].answers[i].text + '</span>';
-              questionHtml += '</button>';
-          }
-          
-          questionHtml += '</div>';
-          questionStructure.innerHTML = questionHtml;
+    if (currentIndex < questions.length) {
+        nextReplayButton.classList.add('addRemove');
+        let answerHTML = questions[currentIndex].answers;
+        // Create question HTML
+        let questionHtml = `
+            <h2 id="question">${currentIndex + 1}. ${questions[currentIndex].question}</h2>
+            <div id="answer-buttons">
+                ${questions[currentIndex].answers.map((answer, i) => `
+                    <button class="mt-8 w-11/12 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 border border-blue-700 rounded text-left" data-index="${i}">
+                        <span class="text-2xl">${answer.text}</span>
+                    </button>
+                `).join('')}
+            </div>
+        `;
 
-          
-          let answerButtons = document.querySelectorAll('#answer-buttons button');
-          for (let i = 0; i < answerButtons.length; i++) {
-              answerButtons[i].addEventListener('click', function() {
-                  checkAnswer(parseInt(this.getAttribute('data-index')));
-              });
-          }
-      }
-  }
+        questionStructure.innerHTML = questionHtml;
+
+        // Attach event listeners
+        document.querySelectorAll('#answer-buttons button').forEach(button => {
+            button.addEventListener('click', () => {
+                checkAnswer(parseInt(button.getAttribute('data-index')));
+            });
+        });
+    }
+}
+
   function checkAnswer(selectedIndex) {
       clearInterval(timerId);
       let answerState = questions[currentIndex].answers[selectedIndex].correct;
