@@ -58,23 +58,49 @@ function usernameExists(username) {
 // Function to create a new user
 function createUser(username, password) {
     let newUserId = `TCF${String(users.length + 1).padStart(2, '0')}`;
-    let newUser = {
+    let newUserProgress = {
         id: newUserId,
         username: username,
-        password: password,
-        progress: {
-            "A1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "A2": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "B1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "B2": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "C1": { grammar: [], vocabulary: [], compr: [], tentative: 0 },
-            "C2": { grammar: [], vocabulary: [], compr: [], tentative: 0 }
-        },
-        currentLevel: "A1"
+
+        currentLevel: 'A1',
+        levels: {
+          A1: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          A2: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          B1: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1]  
+          },
+          B2: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          },
+          C1: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1]  
+          },
+          C2: { 
+            grammar: [[], false, 1], 
+            vocabulary: [[], false, 1], 
+            comprehension: [[], false, 1] 
+          }
+        }
+
     };
-    users.push(newUser);
+    
+    users.push(newUserProgress);
     localStorage.setItem('utilisateurs', JSON.stringify(users));
-    return newUser;
+    return newUserProgress;
 }
 
 // Sign Up button event listener
@@ -82,12 +108,14 @@ document.querySelector('.sign-up button').addEventListener('click', function () 
     let usernameInput = document.querySelector('.sign-up input[placeholder="Username"]');
     let passwordInput = document.querySelector('.sign-up input[placeholder="Password"]');
     let username = usernameInput.value.trim();
+
     let password = passwordInput ? passwordInput.value.trim() : "";
 
     if (username.toLowerCase().includes("admin")) {
         alert("Username cannot contain 'admin'.");
         return;
     }
+
 
     if (usernameExists(username)) {
         alert('Username already used');
@@ -108,6 +136,7 @@ document.getElementById('sign-in').addEventListener('click', function () {
     let username = usernameInput.value.trim();
     let password = passwordInput ? passwordInput.value.trim() : "";
 
+
     let user = users.find(user => user.username === username && user.password === password);
 
     if (user) {
@@ -117,6 +146,7 @@ document.getElementById('sign-in').addEventListener('click', function () {
         } else {
             window.location.href = 'user.html'; // Regular user redirect
         }
+
     } else {
         alert("Invalid username or password");
     }

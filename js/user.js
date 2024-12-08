@@ -1,8 +1,14 @@
+document.getElementById('logout-button').addEventListener('click', function() {
+  sessionStorage.clear();
+  location.reload();
+});
+
 
 document.getElementById('logout-button').addEventListener('click', function() {
   sessionStorage.clear();
   location.reload();
 });
+
 
 document.addEventListener("DOMContentLoaded", function() {
   if (sessionStorage.getItem("connected") === null) {
@@ -11,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   start();
 });
+
 
 function start() {
   // DOM 
@@ -28,8 +35,6 @@ function start() {
 
   // Variables
   const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-  let activeUserInformation = JSON.parse(sessionStorage.getItem("connected"));
-  let activeUserUserName = activeUserInformation.username;
   let userProgress;
   let activeIndex;
   let score = 0;
@@ -42,24 +47,28 @@ function start() {
 
   // localStorage
   let questionns = JSON.parse(localStorage.getItem("questions")) || [];
+  let activeUserInformation = JSON.parse(sessionStorage.getItem("connected"));
   let users = JSON.parse(localStorage.getItem("utilisateurs")) || [];
   let userSaving = JSON.parse(localStorage.getItem("saveUserQuestionStatu")) || [];
- 
-  connectedUser.innerText = activeUserUserName;
+
+  // update user name in the UI
+  connectedUser.innerText = activeUserInformation.username;
 
   // active user progress
   for (let i = 0; i < users.length; i++) {
-    if (users[i].username === activeUserUserName) {
+    if (users[i].username === activeUserInformation.username) {
+
       userProgress = users[i];
       activeIndex = i;
       break;
     }
   }
 
+
   //updates
   updateLevelStyles();
   updateCategoryStyles();
-  updateAllCategoryScores();
+
 
   function updateLevelStyles() {
     for (let i = 0; i < levelButtons.length; i++) {
@@ -89,7 +98,9 @@ function start() {
       
       if (currentLevel && userProgress.levels[currentLevel]) {
         if (userProgress.levels[currentLevel][category]) {
-          if (userProgress.levels[currentLevel][category][0].status) {
+
+          if (userProgress.levels[currentLevel][category][1]  ) {
+
             button.classList.add("bg-green-500", "hover:bg-green-600", "active:bg-green-700");
           } else {
             button.classList.add("bg-rose-500", "hover:bg-rose-600", "active:bg-rose-700");
@@ -101,26 +112,10 @@ function start() {
     }
   }
 
-  function updateAllCategoryScores() {
-    for (let i = 0; i < subLevelButtons.length; i++) {
-      let button = subLevelButtons[i];
-      let category = button.textContent.trim();
-      let scoreSpan = button.nextElementSibling.querySelector("span");
-      
-      if (currentLevel && userProgress.levels[currentLevel]) {
-        if (userProgress.levels[currentLevel][category]) {
-          let categoryScore = userProgress.levels[currentLevel][category][0].score;
-          let totalQuestions = totalQuestionsForCategory(currentLevel, category);
-          scoreSpan.textContent = `${categoryScore}/${totalQuestions}`;
-          
-        } else {
-          scoreSpan.textContent = "0 / 0";
-        }
-      } else {
-        scoreSpan.textContent = "0 / 0";
-      }
-    }
-  }
+
+  
+
+  // questions array length
 
   function totalQuestionsForCategory(level, category) {
     for (let i = 0; i < questionns.length; i++) {
@@ -135,7 +130,9 @@ function start() {
 
   // levels
   for (let i = 0; i < levelButtons.length; i++) {
-    levelButtons[i].addEventListener('click', function(event) {
+
+      levelButtons[i].addEventListener('click', function(event) {
+
       let selectedLevel = event.target.innerText;
       let currentLevelIndex = levels.indexOf(userProgress.currentLevel);
       let selectedLevelIndex = levels.indexOf(selectedLevel);
@@ -145,7 +142,8 @@ function start() {
         updateSelectedLevelInCategories.innerText = "niveau actuelle : " + currentLevel;
         subLevelButtonsContainer.classList.remove('addRemove');
         updateCategoryStyles();
-        updateAllCategoryScores();
+
+
       } else {
         alert('Complete the current level to unlock this one.');
       }
@@ -273,6 +271,7 @@ function start() {
     }, 1000);
   }
 
+
   nextReplayButton.addEventListener('click', function() {
     currentIndex = currentIndex + 1;
     if (currentIndex < questions.length) {
@@ -284,40 +283,51 @@ function start() {
   });
 
   function completeQuiz() {
-      alert(`Le test est terminé! votre Score: ${score}/${questions.length}`);
     
-    
-    if (score === questions.length) {
-      userProgress.levels[currentLevel][currentCategory][0].status = true;
-    } else {
-      userProgress.levels[currentLevel][currentCategory][0].tentative += 1;
-    }
-    
-    userProgress.levels[currentLevel][currentCategory][0].score = score;
+    alert(`Le test est terminé! votre Score: ${score}/${questions.length}`);
+  
+    userProgress.levels[currentLevel][currentCategory][0].push({
+      score: score,
+      testdate: new Date().toISOString().split('T')[0]
+    });
 
+    if (score === questions.length) {
+      userProgress.levels[currentLevel][currentCategory][1] = true;
+    } else {
+      userProgress.levels[currentLevel][currentCategory][1] = false;
+      userProgress.levels[currentLevel][currentCategory][2]++;
+    }
+
+  
     let allComplete = true;
     for (let category in userProgress.levels[currentLevel]) {
-      if (userProgress.levels[currentLevel][category][0].status === false) {
+      if (!userProgress.levels[currentLevel][category][1]) {
+
         allComplete = false;
         break;
       }
     }
+
+
 
     if (allComplete) {
       let currentLevelIndex = levels.indexOf(currentLevel);
       if (currentLevelIndex < levels.length - 1) {
         let nextLevel = levels[currentLevelIndex + 1];
         userProgress.currentLevel = nextLevel;
-        alert("Le niveau " + nextLevel + " est ouvert.");
+
         updateLevelStyles();
+        alert("Le niveau " + nextLevel + " est ouvert.");
       }
     }
 
+    
     users[activeIndex] = userProgress;
     localStorage.setItem("utilisateurs", JSON.stringify(users));
-    
+  
     questionContainer.classList.add('addRemove');
     updateCategoryStyles();
-    updateAllCategoryScores();
+    
+
   }
 }
