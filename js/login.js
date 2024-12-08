@@ -61,6 +61,7 @@ function createUser(username) {
     let newUserProgress = {
         id: newUserId,
         username: username,
+        password: password,
         currentLevel: 'A1',
         levels: {
           A1: { 

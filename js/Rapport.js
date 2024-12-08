@@ -1,123 +1,123 @@
-// Function to populate the dynamic table with user data from localStorage
-function populateDynamicTable() {
-    const users = JSON.parse(localStorage.getItem("utilisateurs")) || [];  // Retrieve users from localStorage
+document.addEventListener("DOMContentLoaded", function () {
+    const users = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+    const searchInput = document.querySelector("input[type='search']");
     const tableBody = document.querySelector("tbody");
 
-    // Clear existing table rows
-    tableBody.innerHTML = "";
+    // Function to render users in the table
+    function renderUsers(filter = "") {
+        // Clear existing rows
+        tableBody.innerHTML = "";
 
-    if (users.length === 0) {
-        console.log("No users found in localStorage.");
-        return;
-    }
-
-    // Iterate over each user
-    users.forEach((user) => {
-        const username = user.username;
-        const userId = user.id || "N/A";
-        const currentLevel = user.currentLevel || "N/A";
-
-        // Initialize stats
-        let totalQuestions = 0;
-        let correctAnswers = 0;
-        let incorrectAnswers = 0;
-
-        // Calculate stats from the user's levels (A1 - C2)
-        Object.values(user.levels).forEach(level => {
-            Object.values(level).forEach(category => {
-                const [questions, completed, attempts] = category;
-
-                // Update counts based on the `questions` array
-                totalQuestions += questions.length; // Total attempted questions
-                correctAnswers += questions.filter(q => q.correct === true).length; // Correct answers
-                incorrectAnswers += questions.filter(q => q.correct === false).length; // Incorrect answers
+        // Filter users by name or ID (exclude admin)
+        const filteredUsers = users
+            .filter(user => user.username.toLowerCase() !== "admin") // Exclude admin
+            .filter(user => {
+                const lowerFilter = filter.toLowerCase();
+                return (
+                    user.username.toLowerCase().includes(lowerFilter) ||
+                    user.id.toLowerCase().includes(lowerFilter)
+                );
             });
+
+        // Render each filtered user
+        filteredUsers.forEach(user => {
+            let totalQuestions = 0;
+            let correctAnswers = 0;
+            let incorrectAnswers = 0;
+
+            for (const level in user.levels) {
+                const grammar = user.levels[level].grammar[0].length;
+                const vocabulary = user.levels[level].vocabulary[0].length;
+                const comprehension = user.levels[level].comprehension[0].length;
+
+                totalQuestions += grammar + vocabulary + comprehension;
+                correctAnswers += user.levels[level].grammar[1] ? grammar : 0;
+                correctAnswers += user.levels[level].vocabulary[1] ? vocabulary : 0;
+                correctAnswers += user.levels[level].comprehension[1] ? comprehension : 0;
+
+                incorrectAnswers = totalQuestions - correctAnswers;
+            }
+
+            // Create a new row for the user
+            const newRow = document.createElement("tr");
+            newRow.classList.add("border-b");
+
+            newRow.innerHTML = `
+                <td class="py-2 px-4">${user.id}</td>
+                <td class="py-2 px-7">${user.username}</td>
+                <td class="py-2 px-20">${totalQuestions}</td>
+                <td class="py-2 px-20">${correctAnswers}</td>
+                <td class="py-2 px-20">${incorrectAnswers}</td>
+                <td class="py-2 px-12">${correctAnswers}</td>
+                <td class="py-2 px-12">${user.currentLevel}</td>
+                <td class="py-2 px-5 text-blue-500 cursor-pointer download-btn" 
+                    data-id="${user.id}" 
+                    data-username="${user.username}" 
+                    data-questions="${totalQuestions}" 
+                    data-correct="${correctAnswers}" 
+                    data-incorrect="${incorrectAnswers}" 
+                    data-score="${correctAnswers}" 
+                    data-level="${user.currentLevel}">
+                    Télécharger
+                </td>
+            `;
+
+            tableBody.appendChild(newRow);
         });
 
-        const score = correctAnswers; // Score is the total correct answers
+        // Add event listeners for download buttons
+        addDownloadListeners();
+    }
 
-        // Create a new row for the user
-        const row = document.createElement("tr");
-        row.classList.add("border-b");
-        row.innerHTML = `
-            <td class="py-2 px-4">${userId}</td>
-            <td class="py-2 px-7">${username}</td>
-            <td class="py-2 px-20">${totalQuestions}</td>
-            <td class="py-2 px-20">${correctAnswers}</td>
-            <td class="py-2 px-20">${incorrectAnswers}</td>
-            <td class="py-2 px-12">${score}</td>
-            <td class="py-2 px-12">${currentLevel}</td>
-            <td class="py-2 px-5 text-blue-500 cursor-pointer">
-                <button class="download-btn" data-username="${username}" data-id="${userId}" data-questions="${totalQuestions}" data-correct="${correctAnswers}" data-incorrect="${incorrectAnswers}" data-score="${score}" data-level="${currentLevel}">
-                    Télécharger
-                </button>
-            </td>
-        `;
-        tableBody.appendChild(row);
+    // Event listener for search input
+    searchInput.addEventListener("input", function () {
+        const filter = searchInput.value.trim();
+        renderUsers(filter); // Pass the filter to the renderUsers function
     });
 
-    // Add event listeners to download buttons
+    // Initial render with no filter
+    renderUsers();
+});
+
+function addDownloadListeners() {
     const downloadButtons = document.querySelectorAll(".download-btn");
-    downloadButtons.forEach((button) => {
-        button.addEventListener("click", (event) => {
-            const {
-                username,
-                id,
-                questions,
-                correct,
-                incorrect,
-                score,
-                level
-            } = event.target.dataset;
-
+    downloadButtons.forEach(button => {
+        button.addEventListener("click", event => {
             const userData = {
-                username,
-                id,
-                totalQuestions: questions,
-                correctAnswers: correct,
-                incorrectAnswers: incorrect,
-                score,
-                currentLevel: level
+                id: event.target.dataset.id,
+                username: event.target.dataset.username,
+                totalQuestions: event.target.dataset.questions,
+                correctAnswers: event.target.dataset.correct,
+                incorrectAnswers: event.target.dataset.incorrect,
+                score: event.target.dataset.score,
+                currentLevel: event.target.dataset.level,
             };
-
-            console.log("Generating PDF with user data:", userData); // Debug log
             generatePDF(userData);
         });
     });
 }
 
-// Function to generate a PDF for the user's stats
+// Generate PDF function
 function generatePDF(userData) {
-    const {
-        username,
-        id,
-        totalQuestions,
-        correctAnswers,
-        incorrectAnswers,
-        score,
-        currentLevel
-    } = userData;
     const { jsPDF } = window.jspdf;
-
     const doc = new jsPDF();
 
     // Set title
     doc.setFontSize(16);
-    doc.text(`Statistiques de l'utilisateur: ${username}`, 10, 10);
+    doc.text(`Statistiques de l'utilisateur: ${userData.username}`, 10, 10);
 
     // Add user details
     doc.setFontSize(12);
-    doc.text(`ID: ${id}`, 10, 20);
-    doc.text(`Questions posées: ${totalQuestions}`, 10, 30);
-    doc.text(`Réponses correctes: ${correctAnswers}`, 10, 40);
-    doc.text(`Réponses incorrectes: ${incorrectAnswers}`, 10, 50);
-    doc.text(`Score total: ${score}`, 10, 60);
-    doc.text(`Niveau atteint: ${currentLevel || "N/A"}`, 10, 70);
+    doc.text(`ID: ${userData.id}`, 10, 20);
+    doc.text(`Questions posées: ${userData.totalQuestions}`, 10, 30);
+    doc.text(`Réponses correctes: ${userData.correctAnswers}`, 10, 40);
+    doc.text(`Réponses incorrectes: ${userData.incorrectAnswers}`, 10, 50);
+    doc.text(`Score total: ${userData.score}`, 10, 60);
+    doc.text(`Niveau atteint: ${userData.currentLevel || "N/A"}`, 10, 70);
 
-    // Save the PDF with a user-specific filename
-    doc.save(`${username}_stats.pdf`);
+    // Save the PDF
+    doc.save(`${userData.username}_stats.pdf`);
 }
-
 // Ensure the page is loaded and populate the dynamic table with users
 document.addEventListener("DOMContentLoaded", () => {
     populateDynamicTable(); // Populate dynamic data from users in localStorage
@@ -129,3 +129,4 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = 'login.html';
     }
 });
+

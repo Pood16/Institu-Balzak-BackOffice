@@ -2,6 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let users = JSON.parse(localStorage.getItem('utilisateurs')) || [];
     const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
+    const successRateCtx = document.getElementById('successRateChart').getContext('2d');
+    const attemptsLevelCtx = document.getElementById('attemptsLevelChart').getContext('2d');
+
+    // Recalculate data and update charts
+    const updateCharts = () => {
+        const attemptsData = calculateAttemptsData(users);
+        const successRateData = calculateSuccessRateData(users);
+
+        successRateChart.data.labels = successRateData.labels;
+        successRateChart.data.datasets[0].data = successRateData.data;
+        successRateChart.update();
+
+        attemptsLevelChart.data.labels = attemptsData.labels;
+        attemptsLevelChart.data.datasets[0].data = attemptsData.data;
+        attemptsLevelChart.update();
+    };
+
     // Calculate attemptsData
     const calculateAttemptsData = (users) => {
         return {
@@ -12,10 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 users.forEach(user => {
                     if (user.levels && user.levels[level]) {
-                        // Sum attempts for all categories in this level
                         const categories = user.levels[level];
                         const levelAttempts = Object.values(categories)
-                            .map(category => category[2] || 0) // Extract the number of attempts
+                            .map(category => category[2] || 0) // Extract number of attempts
                             .reduce((sum, attempts) => sum + attempts, 0);
 
                         totalAttempts += levelAttempts;
@@ -36,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const completedCount = users.filter(user => {
                     if (user.levels && user.levels[level]) {
                         const categories = user.levels[level];
-                        // Check if all categories are marked as completed
                         return Object.values(categories).every(category => category[1] === true);
                     }
                     return false;
@@ -47,13 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-    // Get the calculated data
+    // Initial render
     const attemptsData = calculateAttemptsData(users);
     const successRateData = calculateSuccessRateData(users);
 
-    // Taux de Réussite Global Chart
-    const successRateCtx = document.getElementById('successRateChart').getContext('2d');
-    new Chart(successRateCtx, {
+    const successRateChart = new Chart(successRateCtx, {
         type: 'doughnut',
         data: {
             labels: successRateData.labels,
@@ -68,29 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     'rgba(153, 102, 255, 0.7)',
                     'rgba(255, 159, 64, 0.7)'
                 ],
-                borderColor: [
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
                 borderWidth: 2
             }]
         },
         options: {
             responsive: true,
-            animation: {
-                duration: 1500,
-                easing: 'easeOutBounce'
-            }
+            animation: { duration: 1500, easing: 'easeOutBounce' }
         }
     });
 
-    // Tentatives par Niveau Chart
-    const attemptsLevelCtx = document.getElementById('attemptsLevelChart').getContext('2d');
-    new Chart(attemptsLevelCtx, {
+    const attemptsLevelChart = new Chart(attemptsLevelCtx, {
         type: 'bar',
         data: {
             labels: attemptsData.labels,
@@ -98,21 +98,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 label: 'Nombre de Tentatives',
                 data: attemptsData.data,
                 backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 2
             }]
         },
         options: {
             responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            animation: {
-                duration: 2000,
-                easing: 'easeInOutQuart'
-            }
+            scales: { y: { beginAtZero: true } },
+            animation: { duration: 2000, easing: 'easeInOutQuart' }
         }
+    });
+
+    // Watch for new users being added or updated
+    document.addEventListener('newUserAdded', () => {
+        users = JSON.parse(localStorage.getItem('utilisateurs')) || [];
+        updateCharts();
     });
 });
