@@ -106,12 +106,14 @@ document.querySelector('.sign-up button').addEventListener('click', function () 
     let usernameInput = document.querySelector('.sign-up input[placeholder="Username"]');
     let passwordInput = document.querySelector('.sign-up input[placeholder="Password"]');
     let username = usernameInput.value.trim();
+
     let password = passwordInput ? passwordInput.value.trim() : "";
 
     if (username.toLowerCase().includes("admin")) {
         alert("Username cannot contain 'admin'.");
         return;
     }
+
 
     if (usernameExists(username)) {
         alert('Username already used');
@@ -141,6 +143,7 @@ document.getElementById('sign-in').addEventListener('click', function () {
         } else {
             window.location.href = 'user.html'; // Regular user redirect
         }
+
     } else {
         alert("Invalid username or password");
     }
