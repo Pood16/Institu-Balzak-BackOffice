@@ -1001,7 +1001,7 @@ function deleteQuestion(questionData) {
 
 document.getElementById("logout").addEventListener("click", logout);
 function logout() {
-    sessionStorage.setItem("connected", null);
+    sessionStorage.removeItem("connected");
     window.location.href = "login.html";
 }
 
@@ -1012,7 +1012,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "login.html";
     }
     else {
-        const adminName = sessionStorage.getItem("connected").name;
+        const adminName = JSON.parse(sessionStorage.getItem("connected")).username;
         document.getElementById("admin-name").innerHTML = adminName; // set admin name
         adminDisplayQuestions();
     }
